@@ -305,6 +305,12 @@ function BacklogCard({
           {details && (
             <p className="mt-0.5 truncate text-xs text-zinc-500">{details}</p>
           )}
+          {!!item.steam_playtime_minutes && (
+            <p className="truncate text-xs text-zinc-500">
+              Steam: {Math.max(1, Math.round(item.steam_playtime_minutes / 60))} h
+              jogadas
+            </p>
+          )}
         </div>
 
         <label className="flex flex-col gap-1 text-xs text-zinc-500">

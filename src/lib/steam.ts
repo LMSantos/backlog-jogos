@@ -1,5 +1,8 @@
 import "server-only";
 import { cacheLife } from "next/cache";
+import type { SteamOwnedGame } from "./steam-types";
+
+export type { SteamOwnedGame };
 
 // Steam sign-in uses OpenID 2.0. Steam proves who the user is; we never see
 // their password. https://steamcommunity.com/dev
@@ -108,4 +111,41 @@ export async function getSteamPlayer(
     // 3 = public; 1 = private or friends only.
     isPublic: player.communityvisibilitystate === 3,
   };
+}
+
+
+type RawOwnedGame = { appid: number; name: string; playtime_forever: number };
+
+// The user's Steam library, or null when Steam hides it (private profile or
+// private "game details"). Cached briefly: playtime changes as people play.
+export async function getOwnedGames(
+  steamId: string,
+): Promise<SteamOwnedGame[] | null> {
+  "use cache";
+  cacheLife("minutes");
+
+  const url = new URL(
+    "https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/",
+  );
+  url.search = new URLSearchParams({
+    key: apiKey(),
+    steamid: steamId,
+    include_appinfo: "1",
+    include_played_free_games: "1",
+  }).toString();
+
+  const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  if (!response.ok) throw new Error(`Steam API ${response.status}`);
+
+  // A private library comes back as an empty "response" object.
+  const data = (await response.json()) as {
+    response: { games?: RawOwnedGame[] };
+  };
+  if (!data.response.games) return null;
+
+  return data.response.games.map((game) => ({
+    appId: game.appid,
+    name: game.name,
+    playtimeMinutes: game.playtime_forever,
+  }));
 }

@@ -161,6 +161,13 @@ async function AccountContent({ message }: { message: string | null }) {
               .
             </p>
 
+            <Link
+              href="/importar"
+              className="flex h-12 items-center justify-center rounded-lg bg-zinc-900 px-6 font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
+            >
+              Importar biblioteca
+            </Link>
+
             <form action={unlinkSteam}>
               <button
                 type="submit"

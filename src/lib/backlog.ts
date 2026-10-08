@@ -44,10 +44,12 @@ export type BacklogItem = {
   finished_at: string | null;
   created_at: string;
   updated_at: string;
+  steam_app_id: number | null;
+  steam_playtime_minutes: number | null;
 };
 
 export const BACKLOG_ITEM_COLUMNS =
-  "id, rawg_id, title, cover_url, platforms, genres, release_year, avg_playtime_hours, status, priority, rating, started_at, finished_at, created_at, updated_at";
+  "id, rawg_id, title, cover_url, platforms, genres, release_year, avg_playtime_hours, status, priority, rating, started_at, finished_at, created_at, updated_at, steam_app_id, steam_playtime_minutes";
 
 // Changes whenever a game is added, edited (updated_at is set by a trigger)
 // or removed. Client Components use it to notice fresh data from the server.

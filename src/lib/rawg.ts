@@ -1,3 +1,4 @@
+import "server-only";
 import { cacheLife } from "next/cache";
 import type { Game } from "./games";
 
@@ -88,4 +89,79 @@ export async function getGame(rawgId: number): Promise<Game | null> {
   if (!response.ok) throw new RawgUnavailableError(`RAWG ${response.status}`);
 
   return toGame((await response.json()) as RawgGame);
+}
+
+export type SteamMatch = {
+  rawgId: number;
+  // "steam": RAWG lists this exact Steam app id for the game (certain).
+  // "name": only the name matched; the user should double-check it.
+  confidence: "steam" | "name";
+};
+
+// Steam names often carry symbols RAWG doesn't use ("ELDEN RING™").
+function cleanSteamName(name: string) {
+  return name
+    .replace(/[™®©]/g, "")
+    .replace(/[–—]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeName(name: string) {
+  return cleanSteamName(name)
+    .normalize("NFKD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+async function listsSteamApp(rawgId: number, steamAppId: number) {
+  const response = await rawgFetch(`/games/${rawgId}/stores`);
+  if (!response.ok) return false;
+  const data = (await response.json()) as {
+    results: { store_id: number; url: string }[];
+  };
+  const appUrl = new RegExp(`/app/${steamAppId}(/|$)`);
+  // store_id 1 = Steam.
+  return data.results.some((store) => store.store_id === 1 && appUrl.test(store.url));
+}
+
+// Finds the RAWG game for a Steam app. Cached for a day and shared by
+// everyone, so friends who own the same game cost no extra RAWG calls.
+export async function findRawgGameForSteam(
+  steamAppId: number,
+  steamName: string,
+): Promise<SteamMatch | null> {
+  "use cache";
+  cacheLife("days");
+
+  const query = cleanSteamName(steamName);
+
+  // 1) Search Steam games only and confirm by the Steam app id.
+  const steamSearch = await rawgFetch("/games", {
+    search: query,
+    stores: "1",
+    page_size: "5",
+  });
+  if (!steamSearch.ok) throw new RawgUnavailableError(`RAWG ${steamSearch.status}`);
+  const { results: candidates } = (await steamSearch.json()) as {
+    results: { id: number }[];
+  };
+  const confirmed = await Promise.all(
+    candidates.slice(0, 3).map((game) => listsSteamApp(game.id, steamAppId)),
+  );
+  const index = confirmed.indexOf(true);
+  if (index !== -1) return { rawgId: candidates[index].id, confidence: "steam" };
+
+  // 2) New or re-released games often lack the Steam link on RAWG:
+  //    accept an exact name match, flagged for the user to check.
+  const anySearch = await rawgFetch("/games", { search: query, page_size: "5" });
+  if (!anySearch.ok) throw new RawgUnavailableError(`RAWG ${anySearch.status}`);
+  const { results } = (await anySearch.json()) as {
+    results: { id: number; name: string }[];
+  };
+  const wanted = normalizeName(steamName);
+  const sameName = results.find((game) => normalizeName(game.name) === wanted);
+  return sameName ? { rawgId: sameName.id, confidence: "name" } : null;
 }
