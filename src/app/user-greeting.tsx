@@ -24,6 +24,12 @@ export async function UserGreeting() {
         Olá, <strong>{profile.display_name ?? profile.username}</strong>!{" "}
         <span className="text-zinc-500">@{profile.username}</span>
       </p>
+      <Link
+        href="/buscar"
+        className="flex h-12 items-center rounded-lg bg-zinc-900 px-6 font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
+      >
+        Buscar jogos
+      </Link>
       <form action={signOut}>
         <button
           type="submit"
