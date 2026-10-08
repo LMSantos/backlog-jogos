@@ -60,4 +60,3 @@ Importação da Steam, notificações e app nativo.
 
 ## Pendências conhecidas
 - **Magic link só funciona no mesmo navegador** em que foi pedido: o Supabase só libera editar os modelos de e-mail com SMTP próprio (ex.: Resend + domínio). Com SMTP, trocar o link dos modelos "Magic link" e "Confirm sign up" para `{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email` (a rota `/auth/confirm` já aceita esse formato).
-- **Login com Google em modo "Testando"**: só entram os e-mails cadastrados em Google Auth Platform → Público-alvo → Usuários de teste (máx. 100). Para publicar o app no Google, criar uma página de Política de Privacidade (fazer junto com o Passo 6).
