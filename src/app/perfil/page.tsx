@@ -8,6 +8,7 @@ import { RawgCredit } from "@/components/rawg-credit";
 import { getProfile } from "@/lib/auth";
 import {
   BACKLOG_ITEM_COLUMNS,
+  MY_PLATFORM_LABELS,
   PRIORITY_LABELS,
   type BacklogItem,
 } from "@/lib/backlog";
@@ -105,13 +106,21 @@ async function ProfileContent() {
       <StatsTiles stats={stats} />
 
       <Section title="🎮 Jogando agora" items={playing} empty="Nada em andamento.">
-        {(item) => (item.avg_playtime_hours ? `~${item.avg_playtime_hours} h` : undefined)}
+        {(item) =>
+          [
+            item.my_platform ? MY_PLATFORM_LABELS[item.my_platform] : null,
+            item.avg_playtime_hours ? `~${item.avg_playtime_hours} h` : null,
+          ]
+            .filter(Boolean)
+            .join(" · ") || undefined
+        }
       </Section>
 
       <Section title="Backlog" items={backlog} empty="Backlog vazio.">
         {(item) =>
           [
             `Prioridade ${PRIORITY_LABELS[item.priority].toLowerCase()}`,
+            item.my_platform ? MY_PLATFORM_LABELS[item.my_platform] : null,
             item.avg_playtime_hours ? `~${item.avg_playtime_hours} h` : null,
           ]
             .filter(Boolean)

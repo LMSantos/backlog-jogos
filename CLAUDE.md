@@ -32,6 +32,8 @@ App web **pessoal** para organizar o backlog de jogos e decidir o que jogar com 
 - `status`: `backlog` | `playing` | `finished` | `dropped`
 - `priority`: 1 (alta), 2 (média) ou 3 (baixa)
 - `rating` (1–10, opcional), `notes`
+- `my_platform` (opcional): onde **eu** jogo: `pc` | `steam-deck` | `ps5` | `ps4` | `xbox-series` | `xbox-one` | `switch` | `switch-2` | `mobile` | `other`. Diferente de `platforms` (onde o jogo existe, vindo da RAWG). A RAWG não tem o Switch 2.
+- `steam_app_id`, `steam_playtime_minutes` (vindos da importação da Steam)
 - `started_at`, `finished_at`, `created_at`, `updated_at`
 - Único por (`user_id`, `rawg_id`)
 
@@ -65,6 +67,8 @@ Notificações e app nativo. PlayStation: decidir depois das fases da Steam (sem
 - [x] Passo 10: menu de navegação (barra inferior no celular, barra no topo no computador)
 - [x] Passo 11: tornar o app pessoal (RLS só do dono; remover amigos e perfis públicos)
 - [ ] Passo 12: (a decidir) troféus da PlayStation, experimental
+- [x] Passo 13: "Onde eu jogo" (plataforma própria, incluindo Switch e Switch 2) no card e no filtro
+- [ ] Passo 14: tela de detalhes do jogo (descrição, desenvolvedora, publicadora e tags da RAWG)
 
 _Cancelado: comparar conquistas com os amigos (o app deixou de ser social)._
 

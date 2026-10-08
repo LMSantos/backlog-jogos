@@ -107,6 +107,8 @@ export async function importSteamGames(
       genres: game.genres,
       release_year: game.releaseYear,
       avg_playtime_hours: game.avgPlaytimeHours,
+      // Steam games are played on PC (the user can change it, e.g. Steam Deck).
+      my_platform: "pc",
       ...steamFields,
     });
 

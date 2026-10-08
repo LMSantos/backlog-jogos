@@ -11,14 +11,18 @@ import {
   STATUSES,
   STATUS_LABELS,
   STATUS_TAB_LABELS,
+  MY_PLATFORMS,
+  MY_PLATFORM_LABELS,
   dataVersion,
   type AchievementProgressMap,
   type BacklogItem,
+  type MyPlatform,
   type Priority,
   type Status,
 } from "@/lib/backlog";
 import {
   removeItem,
+  updateMyPlatform,
   updatePriority,
   updateRating,
   updateStatus,
@@ -88,13 +92,16 @@ export function BacklogBoard({
     return result;
   }, [items]);
 
-  const platforms = useMemo(
+  // Filter options: only the platforms in use, plus "none" to find games
+  // that still need one.
+  const usedPlatforms = useMemo(
     () =>
-      [...new Set(items.flatMap((item) => item.platforms))].sort((a, b) =>
-        a.localeCompare(b, "pt-BR"),
+      MY_PLATFORMS.filter((key) =>
+        items.some((item) => item.my_platform === key),
       ),
     [items],
   );
+  const hasUnset = items.some((item) => item.my_platform === null);
 
   const visible = useMemo(
     () =>
@@ -102,7 +109,10 @@ export function BacklogBoard({
         .filter(
           (item) =>
             item.status === tab &&
-            (platform === "all" || item.platforms.includes(platform)),
+            (platform === "all" ||
+              (platform === "none"
+                ? item.my_platform === null
+                : item.my_platform === platform)),
         )
         .sort(COMPARE[sort]),
     [items, tab, platform, sort],
@@ -237,18 +247,19 @@ export function BacklogBoard({
 
       <div className="grid grid-cols-2 gap-2 sm:max-w-md">
         <label className="flex flex-col gap-1 text-xs text-zinc-500">
-          Plataforma
+          Onde jogo
           <select
             value={platform}
             onChange={(event) => setPlatform(event.target.value)}
             className={selectClass}
           >
             <option value="all">Todas</option>
-            {platforms.map((name) => (
-              <option key={name} value={name}>
-                {name}
+            {usedPlatforms.map((key) => (
+              <option key={key} value={key}>
+                {MY_PLATFORM_LABELS[key]}
               </option>
             ))}
+            {hasUnset && <option value="none">Sem plataforma</option>}
           </select>
         </label>
         <label className="flex flex-col gap-1 text-xs text-zinc-500">
@@ -285,7 +296,11 @@ export function BacklogBoard({
       {visible.length === 0 ? (
         <p className="py-8 text-center text-sm text-zinc-500">
           Nenhum jogo em {STATUS_TAB_LABELS[tab]}
-          {platform !== "all" && ` para ${platform}`}.
+          {platform === "none"
+            ? " sem plataforma"
+            : platform !== "all" &&
+              ` no ${MY_PLATFORM_LABELS[platform as MyPlatform]}`}
+          .
         </p>
       ) : (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -305,6 +320,11 @@ export function BacklogBoard({
               onRating={(rating) =>
                 save(item, { rating }, () => updateRating(item.id, rating))
               }
+              onMyPlatform={(myPlatform) =>
+                save(item, { my_platform: myPlatform }, () =>
+                  updateMyPlatform(item.id, myPlatform),
+                )
+              }
               onRemove={() => remove(item)}
             />
           ))}
@@ -320,6 +340,7 @@ function BacklogCard({
   onStatus,
   onPriority,
   onRating,
+  onMyPlatform,
   onRemove,
 }: {
   item: BacklogItem;
@@ -327,11 +348,11 @@ function BacklogCard({
   onStatus: (status: Status) => void;
   onPriority: (priority: Priority) => void;
   onRating: (rating: number | null) => void;
+  onMyPlatform: (platform: MyPlatform | null) => void;
   onRemove: () => void;
 }) {
   const details = [
-    item.avg_playtime_hours ? `~${item.avg_playtime_hours} h` : null,
-    item.platforms.slice(0, 2).join(", "),
+    item.avg_playtime_hours ? `~${item.avg_playtime_hours} h para zerar` : null,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -348,6 +369,11 @@ function BacklogCard({
             unoptimized
             className="object-cover"
           />
+        )}
+        {item.my_platform && (
+          <span className="absolute left-1.5 top-1.5 rounded-md bg-black/75 px-1.5 py-0.5 text-xs font-semibold text-white">
+            {MY_PLATFORM_LABELS[item.my_platform]}
+          </span>
         )}
       </div>
 
@@ -393,6 +419,24 @@ function BacklogCard({
             {STATUSES.map((status) => (
               <option key={status} value={status}>
                 {STATUS_LABELS[status]}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex flex-col gap-1 text-xs text-zinc-500">
+          Onde jogo
+          <select
+            value={item.my_platform ?? ""}
+            onChange={(event) =>
+              onMyPlatform((event.target.value || null) as MyPlatform | null)
+            }
+            className={selectClass}
+          >
+            <option value="">–</option>
+            {MY_PLATFORMS.map((key) => (
+              <option key={key} value={key}>
+                {MY_PLATFORM_LABELS[key]}
               </option>
             ))}
           </select>

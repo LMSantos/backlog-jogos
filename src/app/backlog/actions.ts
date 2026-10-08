@@ -1,6 +1,11 @@
 "use server";
 
-import { isPriority, isStatus, type Status } from "@/lib/backlog";
+import {
+  isMyPlatform,
+  isPriority,
+  isStatus,
+  type Status,
+} from "@/lib/backlog";
 import { revalidateBacklogPages } from "@/lib/revalidate";
 import { createClient } from "@/lib/supabase/server";
 
@@ -120,4 +125,12 @@ export async function removeItem(itemId: string): Promise<ActionResult> {
   }
   revalidateBacklogPages();
   return { ok: true };
+}
+
+export async function updateMyPlatform(
+  itemId: string,
+  platform: string | null,
+): Promise<ActionResult> {
+  if (platform !== null && !isMyPlatform(platform)) return SAVE_FAILED;
+  return updateOwnItem(itemId, { my_platform: platform });
 }
