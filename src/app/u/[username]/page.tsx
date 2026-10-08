@@ -21,15 +21,6 @@ export const metadata: Metadata = {
 export default function ProfilePage({ params }: PageProps<"/u/[username]">) {
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-6">
-      <nav className="flex justify-end gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-        <Link href="/amigos" className="underline underline-offset-4">
-          Amigos
-        </Link>
-        <Link href="/" className="underline underline-offset-4">
-          Início
-        </Link>
-      </nav>
-
       {/* The username is only known at request time (runtime param). */}
       <Suspense fallback={<p className="text-sm text-zinc-500">Carregando…</p>}>
         {params.then(({ username }) => (

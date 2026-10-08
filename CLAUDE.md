@@ -62,8 +62,9 @@ Notificações e app nativo. PlayStation: decidir depois das fases da Steam (sem
 - [x] Passo 7: vincular a conta Steam
 - [x] Passo 8: importar a biblioteca da Steam para o backlog
 - [x] Passo 9: conquistas da Steam no card e tela de conquistas por jogo
-- [ ] Passo 10: comparar conquistas com os amigos
-- [ ] Passo 11: (a decidir) troféus da PlayStation, experimental
+- [x] Passo 10: menu de navegação (barra inferior no celular, barra no topo no computador)
+- [ ] Passo 11: comparar conquistas com os amigos
+- [ ] Passo 12: (a decidir) troféus da PlayStation, experimental
 
 ## Pendências conhecidas
 - **Magic link só funciona no mesmo navegador** em que foi pedido: o Supabase só libera editar os modelos de e-mail com SMTP próprio (ex.: Resend + domínio). Com SMTP, trocar o link dos modelos "Magic link" e "Confirm sign up" para `{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email` (a rota `/auth/confirm` já aceita esse formato).

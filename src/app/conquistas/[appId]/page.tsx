@@ -31,14 +31,9 @@ export default function AchievementsPage({
 }: PageProps<"/conquistas/[appId]">) {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 py-6">
-      <nav className="flex justify-end gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-        <Link href="/backlog" className="underline underline-offset-4">
-          Meu backlog
-        </Link>
-        <Link href="/" className="underline underline-offset-4">
-          Início
-        </Link>
-      </nav>
+      <Link href="/backlog" className="self-start text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400">
+        ← Meu backlog
+      </Link>
 
       <Suspense fallback={<p className="text-sm text-zinc-500">Carregando…</p>}>
         {params.then(({ appId }) => (

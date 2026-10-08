@@ -132,8 +132,10 @@ export function ImportList({
         })}
       </ul>
 
-      {/* Sticky action bar: easy to reach with the thumb on phones. */}
-      <div className="fixed inset-x-0 bottom-0 border-t border-zinc-200 bg-white/95 p-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95">
+      {/* Fixed action bar, right above the bottom menu on phones (4rem +
+          safe area) and at the very bottom from sm up, where the menu is
+          at the top. */}
+      <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 border-t sm:bottom-0 border-zinc-200 bg-white/95 p-3 backdrop-blur dark:border-zinc-800 dark:bg-zinc-950/95">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
           <p className="flex-1 text-sm text-zinc-600 dark:text-zinc-400">
             {pending

@@ -13,15 +13,7 @@ export const metadata: Metadata = {
 export default function FriendsPage() {
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-4 py-6">
-      <header className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Amigos</h1>
-        <Link
-          href="/"
-          className="text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400"
-        >
-          Início
-        </Link>
-      </header>
+      <h1 className="text-2xl font-semibold tracking-tight">Amigos</h1>
 
       <Suspense fallback={<p className="text-sm text-zinc-500">Carregando…</p>}>
         <FriendsList />

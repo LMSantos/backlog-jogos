@@ -21,17 +21,9 @@ export default function BacklogPage() {
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-4 px-4 py-6">
       <header className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <h1 className="text-2xl font-semibold tracking-tight">Meu backlog</h1>
-        <nav className="flex gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-          <Link href="/buscar" className="underline underline-offset-4">
-            Buscar jogos
-          </Link>
-          <Link href="/importar" className="underline underline-offset-4">
-            Importar
-          </Link>
-          <Link href="/" className="underline underline-offset-4">
-            Início
-          </Link>
-        </nav>
+        <Link href="/importar" className="text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400">
+          Importar da Steam
+        </Link>
       </header>
 
       <Suspense fallback={<p className="text-sm text-zinc-500">Carregando…</p>}>

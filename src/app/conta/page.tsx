@@ -6,6 +6,7 @@ import { Avatar } from "@/components/avatar";
 import { getUserId } from "@/lib/auth";
 import { getSteamPlayer, type SteamPlayer } from "@/lib/steam";
 import { createClient } from "@/lib/supabase/server";
+import { signOut } from "@/app/auth/actions";
 import { unlinkSteam } from "./actions";
 
 export const metadata: Metadata = {
@@ -28,15 +29,7 @@ const MESSAGES: Record<string, { kind: "ok" | "error"; text: string }> = {
 export default function AccountPage({ searchParams }: PageProps<"/conta">) {
   return (
     <main className="mx-auto flex w-full max-w-xl flex-1 flex-col gap-6 px-4 py-6">
-      <header className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">Minha conta</h1>
-        <Link
-          href="/"
-          className="text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400"
-        >
-          Início
-        </Link>
-      </header>
+      <h1 className="text-2xl font-semibold tracking-tight">Minha conta</h1>
 
       {/* The message comes from ?steam=… (request-time URL data). */}
       <Suspense fallback={<p className="text-sm text-zinc-500">Carregando…</p>}>
@@ -180,12 +173,19 @@ async function AccountContent({ message }: { message: string | null }) {
         )}
       </section>
 
-      <Link
-        href={`/u/${profile.username}`}
-        className="text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400"
-      >
-        Ver meu perfil
-      </Link>
+      <div className="flex items-center justify-between gap-4">
+        <Link href={`/u/${profile.username}`} className="text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400">
+          Ver meu perfil
+        </Link>
+        <form action={signOut}>
+          <button
+            type="submit"
+            className="h-10 rounded-lg border border-zinc-300 px-4 text-sm font-medium dark:border-zinc-700"
+          >
+            Sair da conta
+          </button>
+        </form>
+      </div>
     </>
   );
 }

@@ -22,7 +22,7 @@ export default function PrivacyPage() {
           Política de Privacidade
         </h1>
         <p className="text-sm text-zinc-500">
-          Última atualização: 8 de outubro de 2026
+          Última atualização: 8 de outubro de 2026 (conta Steam)
         </p>
       </header>
 
@@ -53,6 +53,32 @@ export default function PrivacyPage() {
         </ul>
       </Section>
 
+      <Section title="Conta Steam (opcional)">
+        <p>
+          Vincular a Steam é opcional: o app funciona sem ela. Se você vincular,
+          o login acontece na própria Steam e o app <strong>nunca vê sua
+          senha</strong>, nem consegue alterar nada na sua conta Steam (não
+          compra, não vende, não muda configurações).
+        </p>
+        <p className="mt-2">O app lê, pela API oficial da Steam:</p>
+        <ul className="list-disc pl-5">
+          <li>seu SteamID, nome e foto do perfil;</li>
+          <li>sua lista de jogos e o tempo jogado em cada um;</li>
+          <li>suas conquistas nos jogos do seu backlog.</li>
+        </ul>
+        <p className="mt-2">
+          E guarda: o SteamID, os jogos que <strong>você escolher</strong>{" "}
+          importar (com as horas jogadas) e quantas conquistas você tem em cada
+          um. A lista completa da sua biblioteca não é guardada.
+        </p>
+        <p className="mt-2">
+          Para isso a Steam exige que seu perfil e os detalhes dos jogos
+          estejam públicos, o que os deixa visíveis para qualquer pessoa na
+          Steam, não só no app. Você pode desvincular a qualquer momento em
+          Minha conta.
+        </p>
+      </Section>
+
       <Section title="Quem pode ver seus dados">
         Seu nome, foto, nome de usuário e backlog ficam visíveis para as outras
         pessoas que têm conta no app, para que os amigos vejam o que cada um
@@ -62,7 +88,7 @@ export default function PrivacyPage() {
 
       <Section title="Onde os dados ficam">
         Os dados são guardados no Supabase (banco de dados e login) e o site é
-        hospedado na Vercel. As informações dos jogos (nomes, capas, gêneros e
+        hospedado na Vercel. Os dados da Steam vêm da API oficial da Valve. As informações dos jogos (nomes, capas, gêneros e
         tempo médio) vêm da RAWG; nenhum dado seu é enviado para a RAWG.
       </Section>
 
