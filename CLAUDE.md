@@ -1,6 +1,6 @@
 # Backlog de Jogos
 
-App web para eu e meus amigos organizarmos nossos backlogs de jogos e decidirmos o que jogar com o pouco tempo livre que temos.
+App web **pessoal** para organizar o backlog de jogos e decidir o que jogar com o pouco tempo livre. Cada pessoa tem sua conta e **só ela vê os próprios dados** (não há parte social).
 
 ## Sobre mim (dono do projeto)
 - Estou aprendendo a programar com o Claude Code. Explique de forma breve o que está fazendo e por quê, principalmente comandos de terminal, Git e conceitos novos.
@@ -35,7 +35,7 @@ App web para eu e meus amigos organizarmos nossos backlogs de jogos e decidirmos
 - `started_at`, `finished_at`, `created_at`, `updated_at`
 - Único por (`user_id`, `rawg_id`)
 
-RLS: qualquer usuário logado pode **ler** perfis e backlogs (para ver os amigos). Cada um só **cria, edita e apaga** os próprios itens.
+RLS: cada usuário só **lê, cria, edita e apaga** os próprios dados (perfil, backlog, conquistas). Ninguém vê os dados de outra pessoa.
 
 ## Funcionalidades (v1)
 1. **Login** com magic link e Google. No primeiro acesso, escolher um `username`.
@@ -46,8 +46,8 @@ RLS: qualquer usuário logado pode **ler** perfis e backlogs (para ver os amigos
    - meu humor (relaxar / desafio / boa história / jogar com amigos)
 
    O app sorteia entre os jogos com status `backlog` ou `playing`, usando como peso a prioridade, os gêneros compatíveis com o humor e a duração compatível com o tempo. Dá preferência a jogos `playing`, para eu terminar o que já comecei. Botão "outra sugestão".
-5. **Amigos**: página pública `/u/[username]` (só leitura) com o backlog e o que a pessoa está jogando agora. Uma página com a lista de usuários.
-6. **Estatísticas simples**: total no backlog, zerados no ano e horas estimadas para zerar o backlog inteiro.
+5. ~~Amigos~~: removido (o app passou a ser pessoal).
+6. **Meu perfil** (`/perfil`): estatísticas simples (total no backlog, zerados no ano e horas estimadas para zerar o backlog inteiro) e os jogos por status. Só o dono vê.
 
 ## Fora do escopo por enquanto
 Notificações e app nativo. PlayStation: decidir depois das fases da Steam (sem API oficial; só a opção de um único código NPSSO no servidor, como recurso experimental).
@@ -63,8 +63,10 @@ Notificações e app nativo. PlayStation: decidir depois das fases da Steam (sem
 - [x] Passo 8: importar a biblioteca da Steam para o backlog
 - [x] Passo 9: conquistas da Steam no card e tela de conquistas por jogo
 - [x] Passo 10: menu de navegação (barra inferior no celular, barra no topo no computador)
-- [ ] Passo 11: comparar conquistas com os amigos
+- [x] Passo 11: tornar o app pessoal (RLS só do dono; remover amigos e perfis públicos)
 - [ ] Passo 12: (a decidir) troféus da PlayStation, experimental
+
+_Cancelado: comparar conquistas com os amigos (o app deixou de ser social)._
 
 ## Pendências conhecidas
 - **Magic link só funciona no mesmo navegador** em que foi pedido: o Supabase só libera editar os modelos de e-mail com SMTP próprio (ex.: Resend + domínio). Com SMTP, trocar o link dos modelos "Magic link" e "Confirm sign up" para `{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email` (a rota `/auth/confirm` já aceita esse formato).

@@ -34,7 +34,7 @@ export function UsernameForm() {
         />
       </div>
       <p className="text-xs text-zinc-500">
-        Letras minúsculas, números e _. Seus amigos vão te achar por ele.
+        Letras minúsculas, números e _.
       </p>
       <button
         type="submit"

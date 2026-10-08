@@ -8,13 +8,11 @@ import { revalidatePath } from "next/cache";
 export function revalidateBacklogPages() {
   revalidatePath("/backlog");
   revalidatePath("/hoje");
-  revalidatePath("/amigos");
-  revalidatePath("/u/[username]", "page");
+  revalidatePath("/perfil");
 }
 
 // Pages that show profile data such as linked accounts.
 export function revalidateProfilePages() {
   revalidatePath("/conta");
-  revalidatePath("/amigos");
-  revalidatePath("/u/[username]", "page");
+  revalidatePath("/perfil");
 }

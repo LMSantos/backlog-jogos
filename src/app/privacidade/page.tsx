@@ -22,14 +22,14 @@ export default function PrivacyPage() {
           Política de Privacidade
         </h1>
         <p className="text-sm text-zinc-500">
-          Última atualização: 8 de outubro de 2026 (conta Steam)
+          Última atualização: 8 de outubro de 2026 (app pessoal)
         </p>
       </header>
 
       <Section title="O que é este app">
-        O Backlog de Jogos é um app pessoal e sem fins lucrativos para um grupo
-        de amigos organizar os jogos que querem jogar e decidir o que jogar com
-        o tempo livre que têm.
+        O Backlog de Jogos é um app pessoal e sem fins lucrativos para
+        organizar os jogos que você quer jogar e decidir o que jogar com o
+        tempo livre que tem.
       </Section>
 
       <Section title="Quais dados coletamos">
@@ -74,17 +74,16 @@ export default function PrivacyPage() {
         <p className="mt-2">
           Para isso a Steam exige que seu perfil e os detalhes dos jogos
           estejam públicos, o que os deixa visíveis para qualquer pessoa na
-          Steam, não só no app. Você pode desvincular a qualquer momento em
+          própria Steam (no app, continuam visíveis só para você). Você pode desvincular a qualquer momento em
           Minha conta: isso apaga do app o SteamID, as horas jogadas e as
           conquistas guardadas (os jogos continuam no seu backlog).
         </p>
       </Section>
 
       <Section title="Quem pode ver seus dados">
-        Seu nome, foto, nome de usuário e backlog ficam visíveis para as outras
-        pessoas que têm conta no app, para que os amigos vejam o que cada um
-        está jogando. Seu e-mail não aparece para outros usuários. Só você
-        pode alterar o seu backlog.
+        <strong>Só você.</strong> O app não tem parte social: outras pessoas
+        com conta no app não veem seu perfil, seu backlog nem suas conquistas.
+        Essa regra é aplicada pelo próprio banco de dados, não só pelas telas.
       </Section>
 
       <Section title="Onde os dados ficam">

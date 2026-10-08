@@ -30,9 +30,7 @@ function Icon({ children }: { children: ReactNode }) {
   );
 }
 
-function tabsFor(username: string): Tab[] {
-  const myProfile = `/u/${username}`;
-  return [
+const TABS: Tab[] = [
     {
       href: "/hoje",
       label: "Hoje",
@@ -74,37 +72,21 @@ function tabsFor(username: string): Tab[] {
       isActive: (path) => path === "/buscar",
     },
     {
-      href: "/amigos",
-      label: "Amigos",
-      icon: (
-        <Icon>
-          <circle cx="9" cy="8" r="3.5" />
-          <path d="M2.5 20a6.5 6.5 0 0 1 13 0" />
-          <path d="M16 4.5a3.5 3.5 0 0 1 0 7" />
-          <path d="M18.5 14.5A6.5 6.5 0 0 1 21.5 20" />
-        </Icon>
-      ),
-      isActive: (path) =>
-        path === "/amigos" ||
-        (path.startsWith("/u/") && path !== myProfile),
-    },
-    {
-      href: myProfile,
-      label: "Eu",
+      href: "/perfil",
+      label: "Perfil",
       icon: (
         <Icon>
           <circle cx="12" cy="8" r="4" />
           <path d="M4 21a8 8 0 0 1 16 0" />
         </Icon>
       ),
-      isActive: (path) => path === myProfile || path === "/conta",
+      isActive: (path) => path === "/perfil" || path === "/conta",
     },
-  ];
-}
+];
 
 // Bottom tab bar on phones (easy to reach with the thumb), top bar from
 // the sm breakpoint up. Rendered only for logged-in users (see AppNav).
-export function NavBar({ username }: { username: string }) {
+export function NavBar() {
   const pathname = decodeURI(usePathname());
 
   return (
@@ -121,7 +103,7 @@ export function NavBar({ username }: { username: string }) {
           🎮 Backlog de Jogos
         </Link>
         <ul className="flex flex-1 sm:flex-none">
-          {tabsFor(username).map((tab) => {
+          {TABS.map((tab) => {
             const active = tab.isActive(pathname);
             return (
               <li key={tab.href} className="flex-1 sm:flex-none">

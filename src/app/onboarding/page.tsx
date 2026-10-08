@@ -14,7 +14,7 @@ export default function OnboardingPage() {
       <div className="text-center">
         <h1 className="text-2xl font-semibold tracking-tight">Bem-vindo! 🎮</h1>
         <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-          Escolha como seus amigos vão te encontrar.
+          Escolha um nome de usuário para sua conta.
         </p>
       </div>
       <Suspense fallback={<p className="text-center text-sm">Carregando…</p>}>

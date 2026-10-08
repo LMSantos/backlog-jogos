@@ -174,7 +174,7 @@ async function AccountContent({ message }: { message: string | null }) {
       </section>
 
       <div className="flex items-center justify-between gap-4">
-        <Link href={`/u/${profile.username}`} className="text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400">
+        <Link href="/perfil" className="text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400">
           Ver meu perfil
         </Link>
         <form action={signOut}>

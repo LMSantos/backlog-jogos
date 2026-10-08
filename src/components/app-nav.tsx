@@ -6,5 +6,5 @@ import { NavBar } from "./nav-bar";
 export async function AppNav() {
   const profile = await getProfile();
   if (!profile) return null;
-  return <NavBar username={profile.username} />;
+  return <NavBar />;
 }

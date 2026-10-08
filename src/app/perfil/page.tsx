@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Avatar } from "@/components/avatar";
 import { GameTile } from "@/components/game-tile";
 import { RawgCredit } from "@/components/rawg-credit";
-import { getUserId, type Profile } from "@/lib/auth";
+import { getProfile } from "@/lib/auth";
 import {
   BACKLOG_ITEM_COLUMNS,
   PRIORITY_LABELS,
@@ -15,17 +15,16 @@ import { computeStats, type BacklogStats } from "@/lib/stats";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Perfil | Backlog de Jogos",
+  title: "Meu perfil | Backlog de Jogos",
 };
 
-export default function ProfilePage({ params }: PageProps<"/u/[username]">) {
+// The logged-in user's own profile. The app is personal: there are no
+// profiles of other people to visit (and RLS wouldn't let them be read).
+export default function ProfilePage() {
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 px-4 py-6">
-      {/* The username is only known at request time (runtime param). */}
       <Suspense fallback={<p className="text-sm text-zinc-500">Carregando…</p>}>
-        {params.then(({ username }) => (
-          <ProfileContent username={username} />
-        ))}
+        <ProfileContent />
       </Suspense>
 
       <RawgCredit />
@@ -33,27 +32,25 @@ export default function ProfilePage({ params }: PageProps<"/u/[username]">) {
   );
 }
 
-async function ProfileContent({ username }: { username: string }) {
-  // RLS only lets logged-in users read profiles and backlogs.
-  const viewerId = await getUserId();
-  if (!viewerId) redirect("/login");
+async function ProfileContent() {
+  const profile = await getProfile();
+  if (!profile) redirect("/login");
 
   const supabase = await createClient();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("id, username, display_name, avatar_url, steam_id")
-    .eq("username", decodeURIComponent(username).toLowerCase())
-    .maybeSingle<Profile & { steam_id: string | null }>();
-  if (!profile) notFound();
-
-  const { data } = await supabase
-    .from("backlog_items")
-    .select(BACKLOG_ITEM_COLUMNS)
-    .eq("user_id", profile.id);
+  const [{ data }, { data: steam }] = await Promise.all([
+    supabase
+      .from("backlog_items")
+      .select(BACKLOG_ITEM_COLUMNS)
+      .eq("user_id", profile.id),
+    supabase
+      .from("profiles")
+      .select("steam_id")
+      .eq("id", profile.id)
+      .maybeSingle<{ steam_id: string | null }>(),
+  ]);
   const items = (data ?? []) as BacklogItem[];
 
   const name = profile.display_name ?? profile.username;
-  const isMe = profile.id === viewerId;
   const stats = computeStats(items, new Date());
 
   const playing = items
@@ -80,11 +77,11 @@ async function ProfileContent({ username }: { username: string }) {
           </h1>
           <p className="text-zinc-500">
             @{profile.username}
-            {profile.steam_id && (
+            {steam?.steam_id && (
               <>
                 {" · "}
                 <a
-                  href={`https://steamcommunity.com/profiles/${profile.steam_id}`}
+                  href={`https://steamcommunity.com/profiles/${steam.steam_id}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline underline-offset-2"
@@ -95,16 +92,14 @@ async function ProfileContent({ username }: { username: string }) {
             )}
           </p>
         </div>
-        {isMe && (
-          <div className="flex shrink-0 flex-col items-end gap-1 text-sm text-zinc-600 dark:text-zinc-400">
-            <Link href="/backlog" className="underline underline-offset-4">
-              Editar
-            </Link>
-            <Link href="/conta" className="underline underline-offset-4">
-              Conta
-            </Link>
-          </div>
-        )}
+        <div className="flex shrink-0 flex-col items-end gap-1 text-sm text-zinc-600 dark:text-zinc-400">
+          <Link href="/backlog" className="underline underline-offset-4">
+            Editar
+          </Link>
+          <Link href="/conta" className="underline underline-offset-4">
+            Conta
+          </Link>
+        </div>
       </header>
 
       <StatsTiles stats={stats} />
