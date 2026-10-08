@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { UserGreeting } from "./user-greeting";
 
@@ -17,6 +18,12 @@ export default function Home() {
       <Suspense fallback={<div className="h-12" />}>
         <UserGreeting />
       </Suspense>
+      <Link
+        href="/privacidade"
+        className="mt-8 text-xs text-zinc-500 underline underline-offset-2"
+      >
+        Política de Privacidade
+      </Link>
     </main>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import { LoginForm } from "./login-form";
 
@@ -19,6 +20,13 @@ export default function LoginPage() {
       <Suspense>
         <LoginForm />
       </Suspense>
+      <p className="text-center text-xs text-zinc-500">
+        Ao entrar, você concorda com a{" "}
+        <Link href="/privacidade" className="underline underline-offset-2">
+          Política de Privacidade
+        </Link>
+        .
+      </p>
     </main>
   );
 }

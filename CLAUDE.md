@@ -56,7 +56,7 @@ Importação da Steam, notificações e app nativo.
 - [x] Passo 3: busca na RAWG e adicionar ao backlog
 - [x] Passo 4: tela do backlog com status e prioridade
 - [x] Passo 5: "O que jogo hoje?"
-- [ ] Passo 6: perfis públicos dos amigos e estatísticas
+- [x] Passo 6: perfis públicos dos amigos e estatísticas
 
 ## Pendências conhecidas
 - **Magic link só funciona no mesmo navegador** em que foi pedido: o Supabase só libera editar os modelos de e-mail com SMTP próprio (ex.: Resend + domínio). Com SMTP, trocar o link dos modelos "Magic link" e "Confirm sign up" para `{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email` (a rota `/auth/confirm` já aceita esse formato).

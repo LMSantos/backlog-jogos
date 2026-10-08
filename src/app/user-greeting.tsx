@@ -30,19 +30,21 @@ export async function UserGreeting() {
       >
         O que jogo hoje? 🎲
       </Link>
-      <div className="flex gap-3">
-        <Link
-          href="/backlog"
-          className="flex h-12 items-center rounded-lg border border-zinc-300 px-6 font-medium dark:border-zinc-700"
-        >
-          Meu backlog
-        </Link>
-        <Link
-          href="/buscar"
-          className="flex h-12 items-center rounded-lg border border-zinc-300 px-6 font-medium dark:border-zinc-700"
-        >
-          Buscar jogos
-        </Link>
+      <div className="grid w-full max-w-xs grid-cols-2 gap-3">
+        {[
+          { href: "/backlog", label: "Meu backlog" },
+          { href: "/buscar", label: "Buscar jogos" },
+          { href: "/amigos", label: "Amigos" },
+          { href: `/u/${profile.username}`, label: "Meu perfil" },
+        ].map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="flex h-12 items-center justify-center rounded-lg border border-zinc-300 px-3 font-medium dark:border-zinc-700"
+          >
+            {link.label}
+          </Link>
+        ))}
       </div>
       <form action={signOut}>
         <button

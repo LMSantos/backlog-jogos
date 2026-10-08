@@ -5,8 +5,12 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   images: {
-    // Game covers come already resized from the RAWG media server.
-    remotePatterns: [new URL("https://media.rawg.io/media/**")],
+    // Game covers come already resized from the RAWG media server;
+    // profile pictures come from Google sign-in.
+    remotePatterns: [
+      new URL("https://media.rawg.io/media/**"),
+      new URL("https://lh3.googleusercontent.com/**"),
+    ],
   },
   turbopack: {
     rules: {
