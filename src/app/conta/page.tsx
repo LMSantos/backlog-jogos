@@ -7,7 +7,7 @@ import { getUserId } from "@/lib/auth";
 import { getSteamPlayer, type SteamPlayer } from "@/lib/steam";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/auth/actions";
-import { unlinkSteam } from "./actions";
+import { UnlinkSteamButton } from "./unlink-steam-button";
 
 export const metadata: Metadata = {
   title: "Minha conta | Backlog de Jogos",
@@ -15,7 +15,14 @@ export const metadata: Metadata = {
 
 const MESSAGES: Record<string, { kind: "ok" | "error"; text: string }> = {
   vinculada: { kind: "ok", text: "Conta Steam vinculada!" },
-  desvinculada: { kind: "ok", text: "Conta Steam desvinculada." },
+  desvinculada: {
+    kind: "ok",
+    text: "Conta Steam desvinculada. Suas horas e conquistas da Steam foram apagadas do app.",
+  },
+  "erro-desvincular": {
+    kind: "error",
+    text: "Não foi possível desvincular por completo. Tente de novo.",
+  },
   "em-uso": {
     kind: "error",
     text: "Essa conta Steam já está vinculada a outro usuário do app.",
@@ -161,14 +168,7 @@ async function AccountContent({ message }: { message: string | null }) {
               Importar biblioteca
             </Link>
 
-            <form action={unlinkSteam}>
-              <button
-                type="submit"
-                className="text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400"
-              >
-                Desvincular Steam
-              </button>
-            </form>
+            <UnlinkSteamButton />
           </>
         )}
       </section>

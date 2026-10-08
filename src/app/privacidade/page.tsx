@@ -75,7 +75,8 @@ export default function PrivacyPage() {
           Para isso a Steam exige que seu perfil e os detalhes dos jogos
           estejam públicos, o que os deixa visíveis para qualquer pessoa na
           Steam, não só no app. Você pode desvincular a qualquer momento em
-          Minha conta.
+          Minha conta: isso apaga do app o SteamID, as horas jogadas e as
+          conquistas guardadas (os jogos continuam no seu backlog).
         </p>
       </Section>
 
