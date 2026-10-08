@@ -54,7 +54,7 @@ Importação da Steam, notificações e app nativo.
 - [x] Passo 1: criar o projeto Next.js, publicar no GitHub e na Vercel (uma página "Hello" no ar)
 - [x] Passo 2: Supabase (tabelas, RLS, login)
 - [x] Passo 3: busca na RAWG e adicionar ao backlog
-- [ ] Passo 4: tela do backlog com status e prioridade
+- [x] Passo 4: tela do backlog com status e prioridade
 - [ ] Passo 5: "O que jogo hoje?"
 - [ ] Passo 6: perfis públicos dos amigos e estatísticas
 
