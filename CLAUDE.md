@@ -51,7 +51,7 @@ RLS: qualquer usuário logado pode **ler** perfis e backlogs (para ver os amigos
 Importação da Steam, notificações e app nativo.
 
 ## Roteiro
-- [ ] Passo 1: criar o projeto Next.js, publicar no GitHub e na Vercel (uma página "Hello" no ar)
+- [x] Passo 1: criar o projeto Next.js, publicar no GitHub e na Vercel (uma página "Hello" no ar)
 - [ ] Passo 2: Supabase (tabelas, RLS, login)
 - [ ] Passo 3: busca na RAWG e adicionar ao backlog
 - [ ] Passo 4: tela do backlog com status e prioridade
