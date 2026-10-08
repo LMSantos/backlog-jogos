@@ -1,11 +1,20 @@
 import { revalidatePath } from "next/cache";
 
-// Pages that show backlog items. The browser keeps copies of visited and
-// prefetched pages; after any backlog change, mark these copies as stale
-// so the next visit fetches fresh data. Call only from Server Actions.
+// The browser keeps copies of visited and prefetched pages. After a change,
+// mark the copies that show the changed data as stale so the next visit
+// fetches fresh data. Call only from Server Actions or Route Handlers.
+
+// Pages that show backlog items.
 export function revalidateBacklogPages() {
   revalidatePath("/backlog");
   revalidatePath("/hoje");
+  revalidatePath("/amigos");
+  revalidatePath("/u/[username]", "page");
+}
+
+// Pages that show profile data such as linked accounts.
+export function revalidateProfilePages() {
+  revalidatePath("/conta");
   revalidatePath("/amigos");
   revalidatePath("/u/[username]", "page");
 }

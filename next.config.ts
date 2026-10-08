@@ -6,10 +6,11 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   images: {
     // Game covers come already resized from the RAWG media server;
-    // profile pictures come from Google sign-in.
+    // profile pictures come from Google sign-in and Steam.
     remotePatterns: [
       new URL("https://media.rawg.io/media/**"),
       new URL("https://lh3.googleusercontent.com/**"),
+      new URL("https://avatars.steamstatic.com/**"),
     ],
   },
   turbopack: {

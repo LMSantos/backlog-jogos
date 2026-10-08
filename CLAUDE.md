@@ -11,6 +11,7 @@ App web para eu e meus amigos organizarmos nossos backlogs de jogos e decidirmos
 - **Next.js** (App Router) + **TypeScript** + **Tailwind CSS**
 - **Supabase**: banco Postgres + autenticação (login com e-mail por magic link e com Google)
 - **RAWG API** (https://rawg.io/apidocs): busca de jogos, capas, plataformas, gêneros e tempo médio de jogo (`playtime`). Exibir o crédito "Dados por RAWG" com link, como os termos de uso pedem.
+- **Steam Web API** (https://steamcommunity.com/dev): vincular a conta Steam (login OpenID oficial da Steam), importar a biblioteca e ler conquistas. `STEAM_API_KEY` só no servidor.
 - **Vercel**: hospedagem, com deploy automático a cada push no GitHub
 
 ## Regras importantes
@@ -23,6 +24,7 @@ App web para eu e meus amigos organizarmos nossos backlogs de jogos e decidirmos
 ## Modelo de dados
 `profiles`
 - `id` (uuid, = auth.users.id), `username` (único), `display_name`, `avatar_url`, `created_at`
+- `steam_id` (SteamID64, único, opcional): só o servidor grava, depois de confirmar o login na Steam
 
 `backlog_items`
 - `id`, `user_id` → profiles
@@ -48,7 +50,7 @@ RLS: qualquer usuário logado pode **ler** perfis e backlogs (para ver os amigos
 6. **Estatísticas simples**: total no backlog, zerados no ano e horas estimadas para zerar o backlog inteiro.
 
 ## Fora do escopo por enquanto
-Importação da Steam, notificações e app nativo.
+Notificações e app nativo. PlayStation: decidir depois das fases da Steam (sem API oficial; só a opção de um único código NPSSO no servidor, como recurso experimental).
 
 ## Roteiro
 - [x] Passo 1: criar o projeto Next.js, publicar no GitHub e na Vercel (uma página "Hello" no ar)
@@ -57,6 +59,11 @@ Importação da Steam, notificações e app nativo.
 - [x] Passo 4: tela do backlog com status e prioridade
 - [x] Passo 5: "O que jogo hoje?"
 - [x] Passo 6: perfis públicos dos amigos e estatísticas
+- [ ] Passo 7: vincular a conta Steam
+- [ ] Passo 8: importar a biblioteca da Steam para o backlog
+- [ ] Passo 9: conquistas da Steam no card e tela de conquistas por jogo
+- [ ] Passo 10: comparar conquistas com os amigos
+- [ ] Passo 11: (a decidir) troféus da PlayStation, experimental
 
 ## Pendências conhecidas
 - **Magic link só funciona no mesmo navegador** em que foi pedido: o Supabase só libera editar os modelos de e-mail com SMTP próprio (ex.: Resend + domínio). Com SMTP, trocar o link dos modelos "Magic link" e "Confirm sign up" para `{{ .RedirectTo }}?token_hash={{ .TokenHash }}&type=email` (a rota `/auth/confirm` já aceita esse formato).

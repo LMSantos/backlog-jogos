@@ -50,9 +50,9 @@ async function ProfileContent({ username }: { username: string }) {
   const supabase = await createClient();
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, username, display_name, avatar_url")
+    .select("id, username, display_name, avatar_url, steam_id")
     .eq("username", decodeURIComponent(username).toLowerCase())
-    .maybeSingle<Profile>();
+    .maybeSingle<Profile & { steam_id: string | null }>();
   if (!profile) notFound();
 
   const { data } = await supabase
@@ -87,15 +87,32 @@ async function ProfileContent({ username }: { username: string }) {
           <h1 className="truncate text-2xl font-semibold tracking-tight">
             {name}
           </h1>
-          <p className="text-zinc-500">@{profile.username}</p>
+          <p className="text-zinc-500">
+            @{profile.username}
+            {profile.steam_id && (
+              <>
+                {" · "}
+                <a
+                  href={`https://steamcommunity.com/profiles/${profile.steam_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2"
+                >
+                  Steam ↗
+                </a>
+              </>
+            )}
+          </p>
         </div>
         {isMe && (
-          <Link
-            href="/backlog"
-            className="shrink-0 text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400"
-          >
-            Editar
-          </Link>
+          <div className="flex shrink-0 flex-col items-end gap-1 text-sm text-zinc-600 dark:text-zinc-400">
+            <Link href="/backlog" className="underline underline-offset-4">
+              Editar
+            </Link>
+            <Link href="/conta" className="underline underline-offset-4">
+              Conta
+            </Link>
+          </div>
         )}
       </header>
 
