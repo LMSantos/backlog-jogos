@@ -9,6 +9,7 @@ import {
   STATUSES,
   STATUS_LABELS,
   STATUS_TAB_LABELS,
+  dataVersion,
   type BacklogItem,
   type Priority,
   type Status,
@@ -50,6 +51,17 @@ type Notice = { kind: "info" | "error"; text: string } | null;
 
 export function BacklogBoard({ initialItems }: { initialItems: BacklogItem[] }) {
   const [items, setItems] = useState(initialItems);
+
+  // Next.js keeps this component alive between navigations (React
+  // <Activity>), so useState would hold on to the first list it got.
+  // When the server sends changed data, adopt it, keeping tab/filter/sort.
+  const serverVersion = dataVersion(initialItems);
+  const [syncedVersion, setSyncedVersion] = useState(serverVersion);
+  if (serverVersion !== syncedVersion) {
+    setSyncedVersion(serverVersion);
+    setItems(initialItems);
+  }
+
   const [tab, setTab] = useState<Status>(() =>
     initialItems.some((item) => item.status === "playing")
       ? "playing"

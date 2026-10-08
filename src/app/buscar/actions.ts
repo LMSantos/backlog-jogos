@@ -1,6 +1,7 @@
 "use server";
 
 import { getGame } from "@/lib/rawg";
+import { revalidateBacklogPages } from "@/lib/revalidate";
 import { createClient } from "@/lib/supabase/server";
 
 export type AddToBacklogResult = { ok: true } | { ok: false; error: string };
@@ -47,10 +48,10 @@ export async function addToBacklog(
     avg_playtime_hours: game.avgPlaytimeHours,
   });
 
-  if (error) {
-    // 23505 = unique (user_id, rawg_id): already in the backlog, so it's fine.
-    if (error.code === "23505") return { ok: true };
+  // 23505 = unique (user_id, rawg_id): already in the backlog, so it's fine.
+  if (error && error.code !== "23505") {
     return { ok: false, error: "Não foi possível adicionar. Tente de novo." };
   }
+  revalidateBacklogPages();
   return { ok: true };
 }

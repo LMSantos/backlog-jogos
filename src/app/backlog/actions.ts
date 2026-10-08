@@ -1,6 +1,7 @@
 "use server";
 
 import { isPriority, isStatus, type Status } from "@/lib/backlog";
+import { revalidateBacklogPages } from "@/lib/revalidate";
 import { createClient } from "@/lib/supabase/server";
 
 type Failure = { ok: false; error: string };
@@ -46,6 +47,7 @@ async function updateOwnItem(
     .select("id");
 
   if (error || !data?.length) return SAVE_FAILED;
+  revalidateBacklogPages();
   return { ok: true };
 }
 
@@ -116,5 +118,6 @@ export async function removeItem(itemId: string): Promise<ActionResult> {
   if (error || !data?.length) {
     return { ok: false, error: "Não foi possível remover. Tente de novo." };
   }
+  revalidateBacklogPages();
   return { ok: true };
 }

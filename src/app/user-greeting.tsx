@@ -24,10 +24,16 @@ export async function UserGreeting() {
         Olá, <strong>{profile.display_name ?? profile.username}</strong>!{" "}
         <span className="text-zinc-500">@{profile.username}</span>
       </p>
+      <Link
+        href="/hoje"
+        className="flex h-14 w-full max-w-xs items-center justify-center rounded-lg bg-zinc-900 px-6 text-lg font-semibold text-white dark:bg-zinc-100 dark:text-zinc-900"
+      >
+        O que jogo hoje? 🎲
+      </Link>
       <div className="flex gap-3">
         <Link
           href="/backlog"
-          className="flex h-12 items-center rounded-lg bg-zinc-900 px-6 font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
+          className="flex h-12 items-center rounded-lg border border-zinc-300 px-6 font-medium dark:border-zinc-700"
         >
           Meu backlog
         </Link>
