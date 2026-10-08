@@ -61,7 +61,7 @@ Notificações e app nativo. PlayStation: decidir depois das fases da Steam (sem
 - [x] Passo 6: perfis públicos dos amigos e estatísticas
 - [x] Passo 7: vincular a conta Steam
 - [x] Passo 8: importar a biblioteca da Steam para o backlog
-- [ ] Passo 9: conquistas da Steam no card e tela de conquistas por jogo
+- [x] Passo 9: conquistas da Steam no card e tela de conquistas por jogo
 - [ ] Passo 10: comparar conquistas com os amigos
 - [ ] Passo 11: (a decidir) troféus da PlayStation, experimental
 

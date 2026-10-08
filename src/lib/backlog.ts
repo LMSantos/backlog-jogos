@@ -48,6 +48,12 @@ export type BacklogItem = {
   steam_playtime_minutes: number | null;
 };
 
+// Snapshot of Steam achievement progress per Steam app id.
+export type AchievementProgressMap = Record<
+  number,
+  { unlocked: number; total: number }
+>;
+
 export const BACKLOG_ITEM_COLUMNS =
   "id, rawg_id, title, cover_url, platforms, genres, release_year, avg_playtime_hours, status, priority, rating, started_at, finished_at, created_at, updated_at, steam_app_id, steam_playtime_minutes";
 

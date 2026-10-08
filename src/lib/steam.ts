@@ -149,3 +149,152 @@ export async function getOwnedGames(
     playtimeMinutes: game.playtime_forever,
   }));
 }
+
+const STATS_API = "https://api.steampowered.com/ISteamUserStats";
+
+export type PlayerAchievement = {
+  apiName: string;
+  achieved: boolean;
+  // Unix time (seconds) when unlocked; null while locked.
+  unlockTime: number | null;
+};
+
+export type PlayerAchievementsResult =
+  | { status: "ok"; achievements: PlayerAchievement[] }
+  // Steam hides achievements unless the profile AND game details are public.
+  | { status: "private" }
+  | { status: "no-stats" };
+
+type RawPlayerStats = {
+  success: boolean;
+  error?: string;
+  achievements?: { apiname: string; achieved: number; unlocktime: number }[];
+};
+
+// One player's achievements in one game. Deliberately NOT cached: a
+// "private" answer must not stick around after the user makes the profile
+// public, and new unlocks should show up right away.
+export async function getPlayerAchievements(
+  steamId: string,
+  appId: number,
+): Promise<PlayerAchievementsResult> {
+
+  const url = new URL(`${STATS_API}/GetPlayerAchievements/v1/`);
+  url.search = new URLSearchParams({
+    key: apiKey(),
+    steamid: steamId,
+    appid: String(appId),
+  }).toString();
+
+  const response = await fetch(url, { signal: AbortSignal.timeout(8000) });
+  if (response.status >= 500) throw new Error(`Steam API ${response.status}`);
+
+  // Errors (private profile, no stats) come back as 400/403 with JSON.
+  const { playerstats } = (await response.json()) as {
+    playerstats: RawPlayerStats;
+  };
+  if (!playerstats.success) {
+    if (/not public/i.test(playerstats.error ?? "")) return { status: "private" };
+    return { status: "no-stats" };
+  }
+
+  // A game without achievements answers success with no list.
+  const achievements = playerstats.achievements ?? [];
+  if (achievements.length === 0) return { status: "no-stats" };
+
+  return {
+    status: "ok",
+    achievements: achievements.map((item) => ({
+      apiName: item.apiname,
+      achieved: item.achieved === 1,
+      unlockTime: item.achieved === 1 && item.unlocktime ? item.unlocktime : null,
+    })),
+  };
+}
+
+export type AchievementInfo = {
+  apiName: string;
+  name: string;
+  description: string | null;
+  iconUrl: string;
+  iconGrayUrl: string;
+  hidden: boolean;
+  // Share of all Steam players who unlocked it (0-100), when known.
+  globalPercent: number | null;
+};
+
+export type GameAchievementSchema = {
+  gameName: string;
+  achievements: AchievementInfo[];
+};
+
+type RawSchemaAchievement = {
+  name: string;
+  displayName: string;
+  description?: string;
+  icon: string;
+  icongray: string;
+  hidden: number;
+};
+
+// Names, descriptions (in Portuguese) and icons of a game's achievements,
+// plus how rare each one is. Shared by all users; changes rarely.
+export async function getAchievementSchema(
+  appId: number,
+): Promise<GameAchievementSchema> {
+  "use cache";
+  cacheLife("days");
+
+  const schemaUrl = new URL(`${STATS_API}/GetSchemaForGame/v2/`);
+  schemaUrl.search = new URLSearchParams({
+    key: apiKey(),
+    appid: String(appId),
+    l: "brazilian",
+  }).toString();
+  const percentUrl = new URL(
+    `${STATS_API}/GetGlobalAchievementPercentagesForApp/v2/`,
+  );
+  percentUrl.search = new URLSearchParams({ gameid: String(appId) }).toString();
+
+  const [schemaResponse, percentResponse] = await Promise.all([
+    fetch(schemaUrl, { signal: AbortSignal.timeout(8000) }),
+    // Rarity is a nice extra: never fail the page because of it.
+    fetch(percentUrl, { signal: AbortSignal.timeout(8000) }).catch(() => null),
+  ]);
+  if (!schemaResponse.ok) throw new Error(`Steam API ${schemaResponse.status}`);
+
+  const schema = (await schemaResponse.json()) as {
+    game?: {
+      gameName?: string;
+      availableGameStats?: { achievements?: RawSchemaAchievement[] };
+    };
+  };
+
+  const percents = new Map<string, number>();
+  if (percentResponse?.ok) {
+    const data = (await percentResponse.json()) as {
+      achievementpercentages?: {
+        achievements?: { name: string; percent: string | number }[];
+      };
+    };
+    for (const item of data.achievementpercentages?.achievements ?? []) {
+      const value = Number(item.percent);
+      if (Number.isFinite(value)) percents.set(item.name, value);
+    }
+  }
+
+  return {
+    gameName: schema.game?.gameName ?? "",
+    achievements: (schema.game?.availableGameStats?.achievements ?? []).map(
+      (item) => ({
+        apiName: item.name,
+        name: item.displayName,
+        description: item.description?.trim() || null,
+        iconUrl: item.icon,
+        iconGrayUrl: item.icongray,
+        hidden: item.hidden === 1,
+        globalPercent: percents.get(item.name) ?? null,
+      }),
+    ),
+  };
+}

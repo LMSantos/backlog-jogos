@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
       new URL("https://media.rawg.io/media/**"),
       new URL("https://lh3.googleusercontent.com/**"),
       new URL("https://avatars.steamstatic.com/**"),
+      // Steam achievement icons.
+      new URL("https://steamcdn-a.akamaihd.net/steamcommunity/**"),
+      new URL("https://cdn.akamai.steamstatic.com/steamcommunity/**"),
     ],
   },
   turbopack: {

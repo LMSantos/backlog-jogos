@@ -1,5 +1,6 @@
 "use server";
 
+import { forEachLimited } from "@/lib/concurrency";
 import { findRawgGameForSteam, getGame } from "@/lib/rawg";
 import { revalidateBacklogPages } from "@/lib/revalidate";
 import { getOwnedGames, type SteamOwnedGame } from "@/lib/steam";
@@ -24,23 +25,6 @@ export type ImportResult =
       saveFailed: ImportedGame[];
     }
   | { ok: false; error: string };
-
-// Runs `task` over `items` with at most `limit` running at the same time,
-// to stay friendly with the RAWG API.
-async function forEachLimited<T>(
-  items: T[],
-  limit: number,
-  task: (item: T) => Promise<void>,
-) {
-  const queue = [...items];
-  await Promise.all(
-    Array.from({ length: limit }, async () => {
-      for (let item = queue.shift(); item; item = queue.shift()) {
-        await task(item);
-      }
-    }),
-  );
-}
 
 export async function importSteamGames(
   appIds: number[],

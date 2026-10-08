@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
+import { syncMyAchievements } from "@/app/conquistas/actions";
+import { ProgressBar } from "@/components/progress-bar";
 import {
   PRIORITIES,
   PRIORITY_LABELS,
@@ -10,6 +12,7 @@ import {
   STATUS_LABELS,
   STATUS_TAB_LABELS,
   dataVersion,
+  type AchievementProgressMap,
   type BacklogItem,
   type Priority,
   type Status,
@@ -49,8 +52,16 @@ const selectClass =
 
 type Notice = { kind: "info" | "error"; text: string } | null;
 
-export function BacklogBoard({ initialItems }: { initialItems: BacklogItem[] }) {
+export function BacklogBoard({
+  initialItems,
+  progress,
+}: {
+  initialItems: BacklogItem[];
+  // Read-only and fresh from the server on every visit, so it stays a prop.
+  progress: AchievementProgressMap;
+}) {
   const [items, setItems] = useState(initialItems);
+  const [syncing, startSync] = useTransition();
 
   // Next.js keeps this component alive between navigations (React
   // <Activity>), so useState would hold on to the first list it got.
@@ -152,6 +163,31 @@ export function BacklogBoard({ initialItems }: { initialItems: BacklogItem[] }) 
     }
   }
 
+  const hasSteamGames = items.some((item) => item.steam_app_id !== null);
+
+  function syncAchievements() {
+    setNotice(null);
+    startSync(async () => {
+      const result = await syncMyAchievements();
+      setNotice(
+        result.ok
+          ? {
+              kind: "info",
+              text:
+                result.failed > 0
+                  ? `Conquistas atualizadas; ${result.failed} jogo(s) a Steam não respondeu.`
+                  : "Conquistas atualizadas!",
+            }
+          : {
+              kind: "error",
+              text: result.privacyHelp
+                ? `${result.error} Veja como ajustar em Minha conta.`
+                : result.error,
+            },
+      );
+    });
+  }
+
   if (items.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 py-16 text-center">
@@ -170,6 +206,17 @@ export function BacklogBoard({ initialItems }: { initialItems: BacklogItem[] }) 
 
   return (
     <div className="flex flex-col gap-4">
+      {hasSteamGames && (
+        <button
+          type="button"
+          onClick={syncAchievements}
+          disabled={syncing}
+          className="h-10 self-start rounded-lg border border-zinc-300 px-4 text-sm font-medium disabled:opacity-60 dark:border-zinc-700"
+        >
+          {syncing ? "Atualizando conquistas…" : "🏆 Atualizar conquistas"}
+        </button>
+      )}
+
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
         {STATUSES.map((status) => (
           <button
@@ -246,6 +293,11 @@ export function BacklogBoard({ initialItems }: { initialItems: BacklogItem[] }) 
             <BacklogCard
               key={item.id}
               item={item}
+              progress={
+                item.steam_app_id !== null
+                  ? progress[item.steam_app_id]
+                  : undefined
+              }
               onStatus={(status) => changeStatus(item, status)}
               onPriority={(priority) =>
                 save(item, { priority }, () => updatePriority(item.id, priority))
@@ -264,12 +316,14 @@ export function BacklogBoard({ initialItems }: { initialItems: BacklogItem[] }) 
 
 function BacklogCard({
   item,
+  progress,
   onStatus,
   onPriority,
   onRating,
   onRemove,
 }: {
   item: BacklogItem;
+  progress?: { unlocked: number; total: number };
   onStatus: (status: Status) => void;
   onPriority: (priority: Priority) => void;
   onRating: (rating: number | null) => void;
@@ -310,6 +364,22 @@ function BacklogCard({
               Steam: {Math.max(1, Math.round(item.steam_playtime_minutes / 60))} h
               jogadas
             </p>
+          )}
+          {item.steam_app_id !== null && progress?.total !== 0 && (
+            <Link
+              href={`/conquistas/${item.steam_app_id}`}
+              className="mt-1 block text-xs text-zinc-500 underline-offset-2 hover:underline"
+            >
+              {progress ? (
+                <ProgressBar
+                  value={progress.unlocked}
+                  total={progress.total}
+                  compact
+                />
+              ) : (
+                "🏆 Ver conquistas"
+              )}
+            </Link>
           )}
         </div>
 

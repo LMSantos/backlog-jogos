@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { RawgCredit } from "@/components/rawg-credit";
 import { getProfile, getUserId } from "@/lib/auth";
-import { BACKLOG_ITEM_COLUMNS, type BacklogItem } from "@/lib/backlog";
+import {
+  BACKLOG_ITEM_COLUMNS,
+  type AchievementProgressMap,
+  type BacklogItem,
+} from "@/lib/backlog";
 import { createClient } from "@/lib/supabase/server";
 import { BacklogBoard } from "./backlog-board";
 
@@ -45,11 +49,17 @@ async function BacklogLoader() {
   if (!(await getProfile())) redirect("/onboarding");
 
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("backlog_items")
-    .select(BACKLOG_ITEM_COLUMNS)
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false });
+  const [{ data, error }, { data: progressRows }] = await Promise.all([
+    supabase
+      .from("backlog_items")
+      .select(BACKLOG_ITEM_COLUMNS)
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("steam_achievement_progress")
+      .select("steam_app_id, unlocked, total")
+      .eq("user_id", userId),
+  ]);
 
   if (error) {
     return (
@@ -60,5 +70,15 @@ async function BacklogLoader() {
     );
   }
 
-  return <BacklogBoard initialItems={(data ?? []) as BacklogItem[]} />;
+  const progress: AchievementProgressMap = {};
+  for (const row of progressRows ?? []) {
+    progress[row.steam_app_id] = { unlocked: row.unlocked, total: row.total };
+  }
+
+  return (
+    <BacklogBoard
+      initialItems={(data ?? []) as BacklogItem[]}
+      progress={progress}
+    />
+  );
 }
