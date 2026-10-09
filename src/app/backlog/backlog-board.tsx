@@ -359,7 +359,11 @@ function BacklogCard({
 
   return (
     <li className="flex flex-col overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800">
-      <div className="relative aspect-video bg-zinc-200 dark:bg-zinc-800">
+      <Link
+        href={`/jogo/${item.id}`}
+        aria-label={`Detalhes de ${item.title}`}
+        className="relative block aspect-video bg-zinc-200 dark:bg-zinc-800"
+      >
         {item.cover_url && (
           <Image
             src={item.cover_url}
@@ -375,13 +379,19 @@ function BacklogCard({
             {MY_PLATFORM_LABELS[item.my_platform]}
           </span>
         )}
-      </div>
+      </Link>
 
       <div className="flex flex-1 flex-col gap-2 p-2">
         <div className="min-h-0 flex-1">
-          <p className="line-clamp-2 text-sm font-medium leading-tight">
+          <Link
+            href={`/jogo/${item.id}`}
+            className="line-clamp-2 text-sm font-medium leading-tight underline-offset-2 hover:underline"
+          >
             {item.title}
-          </p>
+          </Link>
+          {item.notes && (
+            <p className="mt-0.5 text-xs text-zinc-500">📝 Com comentário</p>
+          )}
           {details && (
             <p className="mt-0.5 truncate text-xs text-zinc-500">{details}</p>
           )}

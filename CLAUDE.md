@@ -68,7 +68,7 @@ Notificações e app nativo. PlayStation: decidir depois das fases da Steam (sem
 - [x] Passo 11: tornar o app pessoal (RLS só do dono; remover amigos e perfis públicos)
 - [ ] Passo 12: (a decidir) troféus da PlayStation, experimental
 - [x] Passo 13: "Onde eu jogo" (plataforma própria, incluindo Switch e Switch 2) no card e no filtro
-- [ ] Passo 14: tela de detalhes do jogo (descrição, desenvolvedora, publicadora e tags da RAWG)
+- [x] Passo 14: tela de detalhes do jogo (descrição, desenvolvedora, publicadora e tags da RAWG) com **comentário pessoal** (coluna `notes`: o registro de como foi jogar/zerar na época)
 
 _Cancelado: comparar conquistas com os amigos (o app deixou de ser social)._
 

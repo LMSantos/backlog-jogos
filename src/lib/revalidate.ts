@@ -9,6 +9,7 @@ export function revalidateBacklogPages() {
   revalidatePath("/backlog");
   revalidatePath("/hoje");
   revalidatePath("/perfil");
+  revalidatePath("/jogo/[id]", "page");
 }
 
 // Pages that show profile data such as linked accounts.

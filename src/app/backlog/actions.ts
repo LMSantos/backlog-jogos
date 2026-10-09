@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  NOTES_MAX_LENGTH,
   isMyPlatform,
   isPriority,
   isStatus,
@@ -133,4 +134,21 @@ export async function updateMyPlatform(
 ): Promise<ActionResult> {
   if (platform !== null && !isMyPlatform(platform)) return SAVE_FAILED;
   return updateOwnItem(itemId, { my_platform: platform });
+}
+
+// Personal comment about the game ("how it was to finish it back then").
+// Private like the rest of the backlog: RLS lets only the owner read it.
+export async function updateNotes(
+  itemId: string,
+  notes: string,
+): Promise<ActionResult> {
+  if (typeof notes !== "string") return SAVE_FAILED;
+  const trimmed = notes.trim();
+  if (trimmed.length > NOTES_MAX_LENGTH) {
+    return {
+      ok: false,
+      error: `O comentário pode ter até ${NOTES_MAX_LENGTH} caracteres.`,
+    };
+  }
+  return updateOwnItem(itemId, { notes: trimmed || null });
 }

@@ -57,6 +57,9 @@ export const MY_PLATFORM_LABELS: Record<MyPlatform, string> = {
   other: "Outra",
 };
 
+// Personal comment per game (column notes).
+export const NOTES_MAX_LENGTH = 2000;
+
 export type BacklogItem = {
   id: string;
   rawg_id: number;
@@ -76,6 +79,7 @@ export type BacklogItem = {
   steam_app_id: number | null;
   steam_playtime_minutes: number | null;
   my_platform: MyPlatform | null;
+  notes: string | null;
 };
 
 // Snapshot of Steam achievement progress per Steam app id.
@@ -85,7 +89,7 @@ export type AchievementProgressMap = Record<
 >;
 
 export const BACKLOG_ITEM_COLUMNS =
-  "id, rawg_id, title, cover_url, platforms, genres, release_year, avg_playtime_hours, status, priority, rating, started_at, finished_at, created_at, updated_at, steam_app_id, steam_playtime_minutes, my_platform";
+  "id, rawg_id, title, cover_url, platforms, genres, release_year, avg_playtime_hours, status, priority, rating, started_at, finished_at, created_at, updated_at, steam_app_id, steam_playtime_minutes, my_platform, notes";
 
 // Changes whenever a game is added, edited (updated_at is set by a trigger)
 // or removed. Client Components use it to notice fresh data from the server.

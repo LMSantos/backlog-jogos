@@ -165,3 +165,58 @@ export async function findRawgGameForSteam(
   const sameName = results.find((game) => normalizeName(game.name) === wanted);
   return sameName ? { rawgId: sameName.id, confidence: "name" } : null;
 }
+
+export type GameDetails = {
+  // Plain text in English (RAWG has no translations), or null.
+  description: string | null;
+  developers: string[];
+  publishers: string[];
+  tags: string[];
+  website: string | null;
+  released: string | null;
+};
+
+type RawGameDetails = {
+  description_raw?: string;
+  developers?: { name: string }[];
+  publishers?: { name: string }[];
+  tags?: { name: string; language: string }[];
+  website?: string;
+  released?: string | null;
+};
+
+// Tags about Steam features or controllers say nothing about the game itself.
+const TECHNICAL_TAG =
+  /steam|controller|cloud|achievement|trading|leaderboard|stats|in-app|anti-cheat|remote play/i;
+const MAX_TAGS = 10;
+
+function safeUrl(value: string | undefined) {
+  const url = value?.trim();
+  return url && /^https?:\/\//i.test(url) ? url : null;
+}
+
+// Extra info for the game page. Same endpoint as getGame, cached for weeks.
+export async function getGameDetails(
+  rawgId: number,
+): Promise<GameDetails | null> {
+  "use cache";
+  cacheLife("weeks");
+
+  const response = await rawgFetch(`/games/${rawgId}`);
+  if (response.status === 404) return null;
+  if (!response.ok) throw new RawgUnavailableError(`RAWG ${response.status}`);
+
+  const raw = (await response.json()) as RawGameDetails;
+  return {
+    description: raw.description_raw?.trim() || null,
+    developers: raw.developers?.map((item) => item.name) ?? [],
+    publishers: raw.publishers?.map((item) => item.name) ?? [],
+    tags: (raw.tags ?? [])
+      .filter((tag) => tag.language === "eng" && !TECHNICAL_TAG.test(tag.name))
+      .map((tag) => tag.name)
+      .slice(0, MAX_TAGS),
+    // External data used as a link: only accept http(s) URLs.
+    website: safeUrl(raw.website),
+    released: raw.released ?? null,
+  };
+}
