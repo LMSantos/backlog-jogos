@@ -30,7 +30,22 @@ export async function updateSession(request: NextRequest) {
   });
 
   // Must run before anything else: triggers the token refresh if needed.
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
+
+  // The backlog is the app's main screen: logged-in users opening "/" go
+  // straight there (visitors still see the landing page with "Entrar").
+  if (data?.claims.sub && request.nextUrl.pathname === "/") {
+    const redirect = NextResponse.redirect(new URL("/backlog", request.url));
+    // Carry over refreshed session cookies and the no-cache headers set by
+    // Supabase (not every header: NextResponse.next() also carries internal
+    // Next.js headers that would turn the redirect into a "continue").
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    for (const key of ["cache-control", "expires", "pragma"]) {
+      const value = response.headers.get(key);
+      if (value) redirect.headers.set(key, value);
+    }
+    return redirect;
+  }
 
   return response;
 }

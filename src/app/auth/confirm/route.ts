@@ -21,10 +21,10 @@ export async function GET(request: NextRequest) {
       type,
       token_hash: tokenHash,
     });
-    if (!error) redirect("/");
+    if (!error) redirect("/backlog");
   } else if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) redirect("/");
+    if (!error) redirect("/backlog");
   }
 
   redirect("/login?error=link");

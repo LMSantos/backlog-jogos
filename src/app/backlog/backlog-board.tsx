@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { syncMyAchievements } from "@/app/conquistas/actions";
+import { buttonClass } from "@/components/button-styles";
+import { ICONS } from "@/components/icons";
 import { ProgressBar } from "@/components/progress-bar";
 import {
   PRIORITIES,
@@ -221,7 +223,7 @@ export function BacklogBoard({
           type="button"
           onClick={syncAchievements}
           disabled={syncing}
-          className="h-10 self-start rounded-lg border border-zinc-300 px-4 text-sm font-medium disabled:opacity-60 dark:border-zinc-700"
+          className={`${buttonClass()} self-start`}
         >
           {syncing ? "Atualizando conquistas…" : "🏆 Atualizar conquistas"}
         </button>
@@ -491,8 +493,9 @@ function BacklogCard({
         <button
           type="button"
           onClick={onRemove}
-          className="self-start py-1 text-xs text-zinc-500 underline underline-offset-2"
+          className={`${buttonClass({ variant: "danger", size: "sm" })} mt-1 w-full`}
         >
+          {ICONS.trash}
           Remover
         </button>
       </div>

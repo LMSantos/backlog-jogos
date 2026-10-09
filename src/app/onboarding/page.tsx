@@ -26,6 +26,6 @@ export default function OnboardingPage() {
 
 async function OnboardingGate() {
   if (!(await getUserId())) redirect("/login");
-  if (await getProfile()) redirect("/");
+  if (await getProfile()) redirect("/backlog");
   return <UsernameForm />;
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import type { FormEvent } from "react";
+import { buttonClass } from "@/components/button-styles";
+import { ICONS } from "@/components/icons";
 import { unlinkSteam } from "./actions";
 
 const CONFIRM_MESSAGE =
@@ -14,10 +16,8 @@ export function UnlinkSteamButton() {
 
   return (
     <form action={unlinkSteam} onSubmit={confirmUnlink}>
-      <button
-        type="submit"
-        className="text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400"
-      >
+      <button type="submit" className={buttonClass({ variant: "danger" })}>
+        {ICONS.unlink}
         Desvincular Steam
       </button>
     </form>

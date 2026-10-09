@@ -40,7 +40,7 @@ export async function createProfile(
     // 23505 = unique violation. On the primary key it means the profile
     // already exists (e.g. form sent twice), so just move on.
     if (error.code === "23505" && error.message.includes("profiles_pkey")) {
-      redirect("/");
+      redirect("/backlog");
     }
     if (error.code === "23505") {
       return { error: "Esse nome de usuário já está em uso.", username };
@@ -48,5 +48,5 @@ export async function createProfile(
     return { error: "Não foi possível salvar. Tente novamente.", username };
   }
 
-  redirect("/");
+  redirect("/backlog");
 }

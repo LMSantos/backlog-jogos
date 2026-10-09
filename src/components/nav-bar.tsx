@@ -30,58 +30,60 @@ function Icon({ children }: { children: ReactNode }) {
   );
 }
 
+// Backlog first: it is the main screen of the app.
 const TABS: Tab[] = [
-    {
-      href: "/hoje",
-      label: "Hoje",
-      icon: (
-        <Icon>
-          <rect x="3" y="3" width="18" height="18" rx="3" />
-          <circle cx="8.5" cy="8.5" r="1" fill="currentColor" />
-          <circle cx="15.5" cy="15.5" r="1" fill="currentColor" />
-          <circle cx="12" cy="12" r="1" fill="currentColor" />
-        </Icon>
-      ),
-      isActive: (path) => path === "/hoje",
-    },
-    {
-      href: "/backlog",
-      label: "Backlog",
-      icon: (
-        <Icon>
-          <rect x="3" y="3" width="7" height="7" rx="1" />
-          <rect x="14" y="3" width="7" height="7" rx="1" />
-          <rect x="3" y="14" width="7" height="7" rx="1" />
-          <rect x="14" y="14" width="7" height="7" rx="1" />
-        </Icon>
-      ),
-      isActive: (path) =>
-        path === "/backlog" ||
-        path === "/importar" ||
-        path.startsWith("/conquistas/"),
-    },
-    {
-      href: "/buscar",
-      label: "Buscar",
-      icon: (
-        <Icon>
-          <circle cx="11" cy="11" r="7" />
-          <path d="m20 20-3.5-3.5" />
-        </Icon>
-      ),
-      isActive: (path) => path === "/buscar",
-    },
-    {
-      href: "/perfil",
-      label: "Perfil",
-      icon: (
-        <Icon>
-          <circle cx="12" cy="8" r="4" />
-          <path d="M4 21a8 8 0 0 1 16 0" />
-        </Icon>
-      ),
-      isActive: (path) => path === "/perfil" || path === "/conta",
-    },
+  {
+    href: "/backlog",
+    label: "Backlog",
+    icon: (
+      <Icon>
+        <rect x="3" y="3" width="7" height="7" rx="1" />
+        <rect x="14" y="3" width="7" height="7" rx="1" />
+        <rect x="3" y="14" width="7" height="7" rx="1" />
+        <rect x="14" y="14" width="7" height="7" rx="1" />
+      </Icon>
+    ),
+    isActive: (path) =>
+      path === "/backlog" ||
+      path === "/importar" ||
+      path.startsWith("/conquistas/") ||
+      path.startsWith("/jogo/"),
+  },
+  {
+    href: "/hoje",
+    label: "Hoje",
+    icon: (
+      <Icon>
+        <rect x="3" y="3" width="18" height="18" rx="3" />
+        <circle cx="8.5" cy="8.5" r="1" fill="currentColor" />
+        <circle cx="15.5" cy="15.5" r="1" fill="currentColor" />
+        <circle cx="12" cy="12" r="1" fill="currentColor" />
+      </Icon>
+    ),
+    isActive: (path) => path === "/hoje",
+  },
+  {
+    href: "/buscar",
+    label: "Buscar",
+    icon: (
+      <Icon>
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </Icon>
+    ),
+    isActive: (path) => path === "/buscar",
+  },
+  {
+    href: "/perfil",
+    label: "Perfil",
+    icon: (
+      <Icon>
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 21a8 8 0 0 1 16 0" />
+      </Icon>
+    ),
+    isActive: (path) => path === "/perfil" || path === "/conta",
+  },
 ];
 
 // Bottom tab bar on phones (easy to reach with the thumb), top bar from
@@ -97,7 +99,7 @@ export function NavBar() {
     >
       <div className="mx-auto flex max-w-4xl items-stretch sm:gap-1 sm:px-4">
         <Link
-          href="/"
+          href="/backlog"
           className="hidden items-center pr-4 font-semibold tracking-tight sm:flex"
         >
           🎮 Backlog de Jogos

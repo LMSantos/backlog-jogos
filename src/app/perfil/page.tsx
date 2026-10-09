@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Avatar } from "@/components/avatar";
+import { ButtonLink } from "@/components/button-link";
 import { GameTile } from "@/components/game-tile";
 import { RawgCredit } from "@/components/rawg-credit";
 import { getProfile } from "@/lib/auth";
@@ -93,13 +93,13 @@ async function ProfileContent() {
             )}
           </p>
         </div>
-        <div className="flex shrink-0 flex-col items-end gap-1 text-sm text-zinc-600 dark:text-zinc-400">
-          <Link href="/backlog" className="underline underline-offset-4">
+        <div className="flex shrink-0 flex-col items-stretch gap-2">
+          <ButtonLink href="/backlog" icon="edit">
             Editar
-          </Link>
-          <Link href="/conta" className="underline underline-offset-4">
+          </ButtonLink>
+          <ButtonLink href="/conta" icon="settings">
             Conta
-          </Link>
+          </ButtonLink>
         </div>
       </header>
 

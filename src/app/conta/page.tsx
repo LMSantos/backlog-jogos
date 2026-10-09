@@ -3,6 +3,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { Avatar } from "@/components/avatar";
+import { ButtonLink } from "@/components/button-link";
+import { buttonClass } from "@/components/button-styles";
+import { ICONS } from "@/components/icons";
 import { getUserId } from "@/lib/auth";
 import { getSteamPlayer, type SteamPlayer } from "@/lib/steam";
 import { createClient } from "@/lib/supabase/server";
@@ -174,14 +177,12 @@ async function AccountContent({ message }: { message: string | null }) {
       </section>
 
       <div className="flex items-center justify-between gap-4">
-        <Link href="/perfil" className="text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400">
+        <ButtonLink href="/perfil" icon="user">
           Ver meu perfil
-        </Link>
+        </ButtonLink>
         <form action={signOut}>
-          <button
-            type="submit"
-            className="h-10 rounded-lg border border-zinc-300 px-4 text-sm font-medium dark:border-zinc-700"
-          >
+          <button type="submit" className={buttonClass()}>
+            {ICONS.logout}
             Sair da conta
           </button>
         </form>

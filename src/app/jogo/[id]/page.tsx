@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { Suspense, type ReactNode } from "react";
+import { ButtonLink } from "@/components/button-link";
 import { ProgressBar } from "@/components/progress-bar";
 import { RawgCredit } from "@/components/rawg-credit";
 import { getUserId } from "@/lib/auth";
@@ -112,12 +113,11 @@ async function GameContent({ itemId }: { itemId: string }) {
           {item.title}
         </h1>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">{summary}</p>
-        <Link
-          href="/backlog"
-          className="self-start text-sm text-zinc-600 underline underline-offset-4 dark:text-zinc-400"
-        >
-          Mudar status, prioridade ou nota no backlog
-        </Link>
+        <div className="self-start">
+          <ButtonLink href="/backlog" icon="edit">
+            Editar no backlog
+          </ButtonLink>
+        </div>
       </header>
 
       <Section title="📝 Meu comentário">

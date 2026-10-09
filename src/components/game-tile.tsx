@@ -24,6 +24,15 @@ export function GameTile({
               className="object-cover"
             />
           )}
+          {item.notes && (
+            <span
+              title="Tem comentário"
+              aria-label="Tem comentário"
+              className="absolute right-1.5 top-1.5 rounded-md bg-black/75 px-1.5 py-0.5 text-xs"
+            >
+              📝
+            </span>
+          )}
         </div>
         <div className="p-2">
           <p className="line-clamp-2 text-sm font-medium leading-tight">
