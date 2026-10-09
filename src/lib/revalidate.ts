@@ -8,6 +8,7 @@ import { revalidatePath } from "next/cache";
 export function revalidateBacklogPages() {
   revalidatePath("/backlog");
   revalidatePath("/hoje");
+  revalidatePath("/plano");
   revalidatePath("/perfil");
   revalidatePath("/jogo/[id]", "page");
 }

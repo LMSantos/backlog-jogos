@@ -25,6 +25,7 @@ App web **pessoal** para organizar o backlog de jogos e decidir o que jogar com 
 `profiles`
 - `id` (uuid, = auth.users.id), `username` (único), `display_name`, `avatar_url`, `created_at`
 - `steam_id` (SteamID64, único, opcional): só o servidor grava, depois de confirmar o login na Steam
+- `weekly_hours` (opcional, 1–100): quanto tempo eu tenho para jogar por semana (usado no Plano)
 
 `backlog_items`
 - `id`, `user_id` → profiles
@@ -35,6 +36,7 @@ App web **pessoal** para organizar o backlog de jogos e decidir o que jogar com 
 - `my_platform` (opcional): onde **eu** jogo: `pc` | `steam-deck` | `ps5` | `ps4` | `xbox-series` | `xbox-one` | `switch` | `switch-2` | `mobile` | `other`. Diferente de `platforms` (onde o jogo existe, vindo da RAWG). A RAWG não tem o Switch 2.
 - `my_estimate_hours` (opcional, 1–999): **minha estimativa** de horas para zerar. Quando preenchida, vale no app inteiro no lugar de `avg_playtime_hours` (card, sorteio, perfil, plano); a da RAWG aparece só como referência.
 - `steam_app_id`, `steam_playtime_minutes` (vindos da importação da Steam)
+- `plan_position` (opcional): posição na fila do **Plano**. `null` = fora do plano. Só os jogos do plano entram nos cálculos e no progresso do plano
 - `started_at`, `finished_at`, `created_at`, `updated_at`
 - Único por (`user_id`, `rawg_id`)
 
@@ -71,7 +73,7 @@ Notificações e app nativo. PlayStation: decidir depois das fases da Steam (sem
 - [x] Passo 13: "Onde eu jogo" (plataforma própria, incluindo Switch e Switch 2) no card e no filtro
 - [x] Passo 14: tela de detalhes do jogo (descrição, desenvolvedora, publicadora e tags da RAWG) com **comentário pessoal** (coluna `notes`: o registro de como foi jogar/zerar na época)
 - [x] Passo 15: "Minha estimativa" de horas por jogo, usada no lugar da RAWG em todo o app
-- [ ] Passo 16: tela "Plano": tempo por semana, fila de jogos com encaixe automático por mês e progresso
+- [x] Passo 16: tela "Plano": tempo por semana, fila de jogos com encaixe automático por mês e progresso
 
 _Cancelado: comparar conquistas com os amigos (o app deixou de ser social)._
 

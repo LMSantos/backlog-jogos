@@ -81,6 +81,7 @@ export type BacklogItem = {
   my_platform: MyPlatform | null;
   notes: string | null;
   my_estimate_hours: number | null;
+  plan_position: number | null;
 };
 
 // Snapshot of Steam achievement progress per Steam app id.
@@ -90,7 +91,7 @@ export type AchievementProgressMap = Record<
 >;
 
 export const BACKLOG_ITEM_COLUMNS =
-  "id, rawg_id, title, cover_url, platforms, genres, release_year, avg_playtime_hours, status, priority, rating, started_at, finished_at, created_at, updated_at, steam_app_id, steam_playtime_minutes, my_platform, notes, my_estimate_hours";
+  "id, rawg_id, title, cover_url, platforms, genres, release_year, avg_playtime_hours, status, priority, rating, started_at, finished_at, created_at, updated_at, steam_app_id, steam_playtime_minutes, my_platform, notes, my_estimate_hours, plan_position";
 
 // Changes whenever a game is added, edited (updated_at is set by a trigger)
 // or removed. Client Components use it to notice fresh data from the server.
