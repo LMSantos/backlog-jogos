@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  MY_ESTIMATE_MAX,
   NOTES_MAX_LENGTH,
   isMyPlatform,
   isPriority,
@@ -151,4 +152,20 @@ export async function updateNotes(
     };
   }
   return updateOwnItem(itemId, { notes: trimmed || null });
+}
+
+export async function updateMyEstimate(
+  itemId: string,
+  hours: number | null,
+): Promise<ActionResult> {
+  const valid =
+    hours === null ||
+    (Number.isInteger(hours) && hours >= 1 && hours <= MY_ESTIMATE_MAX);
+  if (!valid) {
+    return {
+      ok: false,
+      error: `A estimativa deve ser um número de horas entre 1 e ${MY_ESTIMATE_MAX}.`,
+    };
+  }
+  return updateOwnItem(itemId, { my_estimate_hours: hours });
 }

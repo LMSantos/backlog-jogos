@@ -10,6 +10,7 @@ import {
   BACKLOG_ITEM_COLUMNS,
   MY_PLATFORM_LABELS,
   PRIORITY_LABELS,
+  estimateHours,
   type BacklogItem,
 } from "@/lib/backlog";
 import { computeStats, type BacklogStats } from "@/lib/stats";
@@ -109,7 +110,7 @@ async function ProfileContent() {
         {(item) =>
           [
             item.my_platform ? MY_PLATFORM_LABELS[item.my_platform] : null,
-            item.avg_playtime_hours ? `~${item.avg_playtime_hours} h` : null,
+            estimateHours(item) ? `~${estimateHours(item)} h` : null,
           ]
             .filter(Boolean)
             .join(" · ") || undefined
@@ -121,7 +122,7 @@ async function ProfileContent() {
           [
             `Prioridade ${PRIORITY_LABELS[item.priority].toLowerCase()}`,
             item.my_platform ? MY_PLATFORM_LABELS[item.my_platform] : null,
-            item.avg_playtime_hours ? `~${item.avg_playtime_hours} h` : null,
+            estimateHours(item) ? `~${estimateHours(item)} h` : null,
           ]
             .filter(Boolean)
             .join(" · ")

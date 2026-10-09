@@ -186,8 +186,10 @@ function AboutGame({
       "Lançamento",
       dateFormat.format(new Date(`${details.released}T12:00:00Z`)),
     ]);
+  if (item.my_estimate_hours)
+    facts.push(["Minha estimativa", `~${item.my_estimate_hours} h`]);
   if (item.avg_playtime_hours)
-    facts.push(["Tempo médio", `~${item.avg_playtime_hours} h`]);
+    facts.push(["Tempo médio (RAWG)", `~${item.avg_playtime_hours} h`]);
   if (item.genres.length) facts.push(["Gêneros", item.genres.join(", ")]);
   if (item.platforms.length)
     facts.push(["Disponível em", item.platforms.join(", ")]);

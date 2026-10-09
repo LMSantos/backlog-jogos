@@ -4,7 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { updateStatus } from "@/app/backlog/actions";
-import { dataVersion, STATUS_LABELS, type BacklogItem } from "@/lib/backlog";
+import {
+  dataVersion,
+  estimateHours,
+  STATUS_LABELS,
+  type BacklogItem,
+} from "@/lib/backlog";
 import {
   MOOD_OPTIONS,
   pickSuggestion,
@@ -217,7 +222,9 @@ function SuggestionCard({ suggestion }: { suggestion: Scored }) {
   const { item, reasons } = suggestion;
   const details = [
     STATUS_LABELS[item.status],
-    item.avg_playtime_hours ? `~${item.avg_playtime_hours} h` : null,
+    estimateHours(item)
+      ? `~${estimateHours(item)} h${item.my_estimate_hours ? " (minha)" : ""}`
+      : null,
     item.platforms.slice(0, 3).join(", "),
   ]
     .filter(Boolean)

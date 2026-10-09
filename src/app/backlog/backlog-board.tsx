@@ -14,8 +14,10 @@ import {
   STATUS_LABELS,
   STATUS_TAB_LABELS,
   MY_PLATFORMS,
+  MY_ESTIMATE_MAX,
   MY_PLATFORM_LABELS,
   dataVersion,
+  estimateHours,
   type AchievementProgressMap,
   type BacklogItem,
   type MyPlatform,
@@ -24,6 +26,7 @@ import {
 } from "@/lib/backlog";
 import {
   removeItem,
+  updateMyEstimate,
   updateMyPlatform,
   updatePriority,
   updateRating,
@@ -47,7 +50,7 @@ const COMPARE: Record<SortKey, (a: BacklogItem, b: BacklogItem) => number> = {
   recent: byRecent,
   // Unknown durations go last.
   shortest: (a, b) =>
-    (a.avg_playtime_hours ?? Infinity) - (b.avg_playtime_hours ?? Infinity) ||
+    (estimateHours(a) ?? Infinity) - (estimateHours(b) ?? Infinity) ||
     a.priority - b.priority,
 };
 
@@ -327,6 +330,17 @@ export function BacklogBoard({
                   updateMyPlatform(item.id, myPlatform),
                 )
               }
+              onEstimate={(hours) =>
+                save(item, { my_estimate_hours: hours }, () =>
+                  updateMyEstimate(item.id, hours),
+                )
+              }
+              onInvalidEstimate={() =>
+                setNotice({
+                  kind: "error",
+                  text: `Use um número inteiro de horas, de 1 a ${MY_ESTIMATE_MAX}.`,
+                })
+              }
               onRemove={() => remove(item)}
             />
           ))}
@@ -343,6 +357,8 @@ function BacklogCard({
   onPriority,
   onRating,
   onMyPlatform,
+  onEstimate,
+  onInvalidEstimate,
   onRemove,
 }: {
   item: BacklogItem;
@@ -351,10 +367,14 @@ function BacklogCard({
   onPriority: (priority: Priority) => void;
   onRating: (rating: number | null) => void;
   onMyPlatform: (platform: MyPlatform | null) => void;
+  onEstimate: (hours: number | null) => void;
+  onInvalidEstimate: () => void;
   onRemove: () => void;
 }) {
   const details = [
-    item.avg_playtime_hours ? `~${item.avg_playtime_hours} h para zerar` : null,
+    estimateHours(item)
+      ? `~${estimateHours(item)} h para zerar${item.my_estimate_hours ? " (minha)" : ""}`
+      : null,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -490,6 +510,12 @@ function BacklogCard({
           </label>
         </div>
 
+        <EstimateField
+          item={item}
+          onEstimate={onEstimate}
+          onInvalid={onInvalidEstimate}
+        />
+
         <button
           type="button"
           onClick={onRemove}
@@ -500,5 +526,56 @@ function BacklogCard({
         </button>
       </div>
     </li>
+  );
+}
+
+// "Minha estimativa": saves on blur/Enter. Empty means "use RAWG's".
+// Uncontrolled input keyed by the saved value, so it resets when the saved
+// value changes (or when a failed save is rolled back).
+function EstimateField({
+  item,
+  onEstimate,
+  onInvalid,
+}: {
+  item: BacklogItem;
+  onEstimate: (hours: number | null) => void;
+  onInvalid: () => void;
+}) {
+  function commit(input: HTMLInputElement) {
+    const raw = input.value.trim();
+    const hours = raw === "" ? null : Number(raw);
+    if (hours === item.my_estimate_hours) return;
+    const valid =
+      hours === null ||
+      (Number.isInteger(hours) && hours >= 1 && hours <= MY_ESTIMATE_MAX);
+    if (!valid) {
+      input.value = item.my_estimate_hours?.toString() ?? "";
+      onInvalid();
+      return;
+    }
+    onEstimate(hours);
+  }
+
+  return (
+    <label className="flex flex-col gap-1 text-xs text-zinc-500">
+      Minha estimativa (h)
+      <input
+        key={item.my_estimate_hours ?? "none"}
+        type="number"
+        inputMode="numeric"
+        min={1}
+        max={MY_ESTIMATE_MAX}
+        step={1}
+        defaultValue={item.my_estimate_hours ?? ""}
+        placeholder={
+          item.avg_playtime_hours ? `RAWG: ${item.avg_playtime_hours}` : "–"
+        }
+        onBlur={(event) => commit(event.currentTarget)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") event.currentTarget.blur();
+        }}
+        className={selectClass}
+      />
+    </label>
   );
 }

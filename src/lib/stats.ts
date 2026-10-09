@@ -1,4 +1,4 @@
-import type { BacklogItem } from "./backlog";
+import { estimateHours, type BacklogItem } from "./backlog";
 
 // Years are counted in Brazil time, so a game finished on Dec 31 at 22:00
 // (already Jan 1 in UTC) still counts for the right year.
@@ -37,11 +37,11 @@ export function computeStats(items: BacklogItem[], now: Date): BacklogStats {
     ).length,
     year,
     hoursToFinish: remaining.reduce(
-      (sum, item) => sum + (item.avg_playtime_hours ?? 0),
+      (sum, item) => sum + (estimateHours(item) ?? 0),
       0,
     ),
     unknownDurationCount: remaining.filter(
-      (item) => item.avg_playtime_hours === null,
+      (item) => estimateHours(item) === null,
     ).length,
   };
 }

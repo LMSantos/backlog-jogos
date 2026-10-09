@@ -80,6 +80,7 @@ export type BacklogItem = {
   steam_playtime_minutes: number | null;
   my_platform: MyPlatform | null;
   notes: string | null;
+  my_estimate_hours: number | null;
 };
 
 // Snapshot of Steam achievement progress per Steam app id.
@@ -89,7 +90,7 @@ export type AchievementProgressMap = Record<
 >;
 
 export const BACKLOG_ITEM_COLUMNS =
-  "id, rawg_id, title, cover_url, platforms, genres, release_year, avg_playtime_hours, status, priority, rating, started_at, finished_at, created_at, updated_at, steam_app_id, steam_playtime_minutes, my_platform, notes";
+  "id, rawg_id, title, cover_url, platforms, genres, release_year, avg_playtime_hours, status, priority, rating, started_at, finished_at, created_at, updated_at, steam_app_id, steam_playtime_minutes, my_platform, notes, my_estimate_hours";
 
 // Changes whenever a game is added, edited (updated_at is set by a trigger)
 // or removed. Client Components use it to notice fresh data from the server.
@@ -99,6 +100,15 @@ export function dataVersion(items: BacklogItem[]) {
     "",
   );
   return `${items.length}:${latest}`;
+}
+
+export const MY_ESTIMATE_MAX = 999;
+
+// Hours to finish the game: my own estimate when I set one, otherwise the
+// RAWG average. Use this everywhere time matters (cards, suggestion, stats,
+// plan) so the personal estimate always wins.
+export function estimateHours(item: BacklogItem): number | null {
+  return item.my_estimate_hours ?? item.avg_playtime_hours;
 }
 
 export function isStatus(value: unknown): value is Status {

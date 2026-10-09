@@ -1,6 +1,6 @@
 // "O que jogo hoje?": weighted draw among backlog / playing games.
 // Pure functions (no React, no Supabase), shared with the browser.
-import type { BacklogItem } from "./backlog";
+import { estimateHours, type BacklogItem } from "./backlog";
 
 export const TIME_OPTIONS = {
   short: "Até 1h",
@@ -138,7 +138,7 @@ export function scoreItem(
     weight *= MOOD_MISS_WEIGHT;
   }
 
-  const fit = durationFit(item.avg_playtime_hours, time, playing);
+  const fit = durationFit(estimateHours(item), time, playing);
   weight *= fit.weight;
   if (fit.reason) reasons.push(fit.reason);
 
